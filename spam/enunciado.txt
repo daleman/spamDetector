@@ -1,0 +1,30 @@
+El objetivo de este trabajo práctico es construir un clasificador automático de mensajes de correo electrónico en dos clases: "spam" y "ham" (nombre dado a los mensajes genuinos, no spam).
+
+Junto con este enunciado se entrega un conjunto de datos compuesto por ~19k mensajes "spam" y ~17k "ham". Los mensajes están guardados en crudo en formato JSON, con encabezados, cuerpo y (opcionalmente) archivos adjuntos.
+
+Etapa 1 (presentación en clase: 24/8)
+
+Preparar un conjunto de atributos que se consideren potencialmente útiles en la tarea de aprendizaje. Ejemplos: longitud del cuerpo del mensaje, cantidad de ocurrencias de la palabra "viagra", etc. Este conjunto debe tener no menos de 100 atributos.
+Programar una función que, dado un mensaje, extraiga esos atributos de manera automática.
+Construir un conjunto de datos de desarrollo usando los mensajes provistos. Cada instancia debe tener todos los atributos extraidos en el punto anterior y su clase correspondiente ("spam"/"ham").
+Entrenar árboles de decisión sobre esos datos, usando 10-fold cross validation. Experimentar con diferentes configuraciones de los árboles (p.ej., criterio de selección de atributos, estrategias de pruning) para optimizar su desempeño.
+A modo de referencia, el script baseline_example.py lee los archivos .json, extrae dos atributos simples y entrena un modelo baseline que logra accuracy de 78%.
+
+Etapa 2 (presentación en clase: 31/8)
+
+Experimentar con al menos estos algoritmos usando 10-fold CV, y comparar los resultados: K vecinos más cercanos (KNN), support vector machines (SVM), Naive Bayes, inducción de reglas (Ripper) y Random Forest.
+Etapa 3 (presentación en clase: 14/9)
+
+Emplear las técnicas de reducción de dimensionalidad vistas en clase (selección y transformación de atributos), de manera de intentar mejorar la performance de los modelos de los puntos anteriores.
+Preparar un informe que describa en forma concisa el trabajo realizado y los resultados obtenidos en cada etapa de este TP. No imprimir el informe, generar un archivo PDF.
+Usando la combinación de técnicas que haya obtenido el mejor desempeño, armar un programa que tome como entrada un archivo json con N mensajes, e imprima por pantalla N líneas "spam" o "ham", correspondientes a las clases predichas. Este programa debe correr en las computadoras del laboratorio 4 del DC. El día de la competencia se pedirá etiquetar ~4k mensajes nuevos usando este programa, para así evaluar el desempeño de todos los trabajos y elegir al ganador. Puede suponerse que los mails tendrán el mismo formato que en el conjunto de desarrollo.
+Aclaraciones:
+
+El trabajo deberá elaborarse en grupos de 3 personas.
+La fecha límite de entrega de las tres etapas es el martes 27/9/2016 a las 23:59.
+Las tres etapas se entregan juntas, pero los enunciados se presentan en forma gradual, a medida que vamos viendo los temas en la materia.
+La entrega se debe realizar por mail a "aa.dc.uba(a)gmail.com", y debe incluir el informe (PDF) y un archivo comprimido con todo el código desarrollado. ¡No incluir datos!
+La competencia será el día miércoles 28/9/2016 a las 13:00 en el laboratorio.
+La participación en la competencia es obligatoria, pero la posición del grupo en el ranking de la competencia no forma parte de la evaluación.
+Se podrán pedir pruebas de integridad y autoría, es decir, verificar que la salida solicitada es fruto del modelo presentado y que el modelo fue construido según lo requerido en este enunciado.
+La evaluación será grupal y se basará en la calidad del informe; la originalidad, practicidad y coherencia técnica de la solución; la corrección y solidez de las pruebas realizadas.
