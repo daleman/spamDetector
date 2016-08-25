@@ -8,13 +8,13 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.cross_validation import cross_val_score
 
 # Leo los mails (poner los paths correctos).
-ham_txt= json.load(open('../jsons_version/ham_txt.json'))
-spam_txt= json.load(open('../jsons_version/spam_txt.json'))
+ham_txt= json.load(open('./jsons_version/ham_txt.json'))
+spam_txt= json.load(open('./jsons_version/spam_txt.json'))
 
 # Imprimo un mail de ham y spam como muestra.
-print ham_txt[0]
+#print ham_txt[0]
 print "------------------------------------------------------"
-print spam_txt[0]
+#print spam_txt[0]
 print "------------------------------------------------------"
 
 # Armo un dataset de Pandas 
@@ -31,8 +31,30 @@ df['len'] = map(len, df.text)
 def count_spaces(txt): return txt.count(" ")
 df['count_spaces'] = map(count_spaces, df.text)
 
+def count_viagra(txt): return txt.count("viagra")
+df['count_viagra'] = map(count_viagra, df.text)
+
+def count_sex(txt): return txt.count("sex")
+df['count_sex'] = map(count_sex, df.text)
+
+def count_vagina(txt): return txt.count("vagina")
+df['count_vagina'] = map(count_vagina, df.text)
+
+def count_penis(txt): return txt.count("penis")
+df['count_penis'] = map(count_penis, df.text)
+
+def count_money(txt): return txt.count("money")
+df['count_money'] = map(count_money, df.text)
+
+def count_earn(txt): return txt.count("earn")
+df['count_earn'] = map(count_earn, df.text)
+
+def count_free(txt): return txt.count("free")
+df['count_free'] = map(count_free, df.text)
+
+
 # Preparo data para clasificar
-X = df[['len', 'count_spaces']].values
+X = df[['len', 'count_spaces','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free']].values
 y = df['class']
 
 # Elijo mi clasificador.
