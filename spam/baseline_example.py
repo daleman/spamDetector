@@ -14,7 +14,7 @@ spam_txt= json.load(open('./jsons_version/spam_txt.json'))
 # Imprimo un mail de ham y spam como muestra.
 #print ham_txt[0]
 print "------------------------------------------------------"
-#print spam_txt[0]
+print spam_txt[802]
 print "------------------------------------------------------"
 
 # Armo un dataset de Pandas 
@@ -172,23 +172,42 @@ df['count_com'] = map(count_com, df.text)
 def count_send(txt): return txt.count("send")
 df['count_send'] = map(count_send, df.text)
 
+def count_guionba(txt): return txt.count("_")
+df['count_guionba'] = map(count_guionba, df.text)
 
+def count_menor(txt): return txt.count("<")
+df['count_menor'] = map(count_menor, df.text)
 
+def count_dosp(txt): return txt.count(":")
+df['count_dosp'] = map(count_dosp, df.text)
+
+def count_offer(txt): return txt.count("offer")
+df['count_offer'] = map(count_offer, df.text)
+
+def count_deal(txt): return txt.count("deal")
+df['count_deal'] = map(count_deal, df.text)
+
+def count_cum(txt): return txt.count("cum")
+df['count_cum'] = map(count_cum, df.text)
+
+def count_huge(txt): return txt.count("huge")
+df['count_huge'] = map(count_huge, df.text)
 
 #to do: las palabras que se cuentan contarlas primero haciendo lowercase (quizas es mejor preprocesar los jsons haciendo todo lowercase)
 # hacer que fr33 cuente como free
 
 
 # Preparo data para clasificar
-X = df[['len', 'count_spaces','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free','count_FREE',
+X = df[['len', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free','count_FREE',
 'count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_EARN','count_MONEY','count_now','count_NOW','count_help',
 'count_excl','count_preg','count_dol','count_dollar','count_dollars','count_1','count_2','count_3','count_4','count_5','count_6','count_7'
 ,'count_8','count_9','count_0','count_work','count_arr','count_hash','count_and','count_apare','count_acor','count_plus','count_mult'
-,'count_porc','count_equal','count_dot','count_dotc','count_apos','count_com','count_send']].values
+,'count_porc','count_equal','count_dot','count_dotc','count_apos','count_com','count_send','count_guionba','count_menor','count_dosp'
+,'count_offer','count_deal']].values
 y = df['class']
 
 # Elijo mi clasificador.
-clf = DecisionTreeClassifier()
+clf = DecisionTreeClassifier(criterion='entropy')
 
 # Ejecuto el clasificador entrenando con un esquema de cross validation
 # de 10 folds.
