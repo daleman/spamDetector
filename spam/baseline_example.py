@@ -6,16 +6,21 @@ import numpy as np
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.cross_validation import cross_val_score
+from sklearn import datasets
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.grid_search import GridSearchCV
 
 # Leo los mails (poner los paths correctos).
-ham_txt= json.load(open('./jsons_version/ham_txt.json'))
-spam_txt= json.load(open('./jsons_version/spam_txt.json'))
+ham_txt = json.load(open('../dataset_dev/ham_dev.json'))
+spam_txt = json.load(open('../dataset_dev/spam_dev.json'))
 
 # Imprimo un mail de ham y spam como muestra.
 #print ham_txt[0]
-print "------------------------------------------------------"
-print spam_txt[802]
-print "------------------------------------------------------"
+#print "------------------------------------------------------"
+#print spam_txt[802]
+#print "------------------------------------------------------"
 
 # Armo un dataset de Pandas 
 # http://pandas.pydata.org/
@@ -27,7 +32,18 @@ df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(sp
 # 1) Longitud del mail.
 df['len'] = map(len, df.text)
 
-# 2) Cantidad de espacios en el mail.
+def count_mm(txt): return txt.count("mailman.enron.com")
+df['count_mm'] = map(count_mm, df.text)
+
+def count_by(txt): return txt.count("by")
+df['count_by'] = map(count_by, df.text)
+
+def count_td(txt): return txt.count("<td")
+df['count_td'] = map(count_td, df.text)
+
+def count_n(txt): return txt.count("\n")
+df['count_n'] = map(count_n, df.text)
+
 def count_spaces(txt): return txt.count(" ")
 df['count_spaces'] = map(count_spaces, df.text)
 
@@ -84,6 +100,18 @@ df['count_help'] = map(count_help, df.text)
 
 def count_excl(txt): return txt.count("!")
 df['count_excl'] = map(count_excl, df.text)
+
+def count_lose(txt): return txt.count("lose")
+df['count_lose'] = map(count_lose, df.text)
+
+def count_weig(txt): return txt.count("weight")
+df['count_weig'] = map(count_weig, df.text)
+
+def count_vote(txt): return txt.count("vote")
+df['count_vote'] = map(count_vote, df.text)
+
+def count_join(txt): return txt.count("join")
+df['count_join'] = map(count_join, df.text)
 
 def count_preg(txt): return txt.count("?")
 df['count_preg'] = map(count_preg, df.text)
@@ -198,12 +226,12 @@ df['count_huge'] = map(count_huge, df.text)
 
 
 # Preparo data para clasificar
-X = df[['len', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free','count_FREE',
+X = df[['len','count_mm','count_n','count_td','count_by', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free','count_FREE',
 'count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_EARN','count_MONEY','count_now','count_NOW','count_help',
 'count_excl','count_preg','count_dol','count_dollar','count_dollars','count_1','count_2','count_3','count_4','count_5','count_6','count_7'
 ,'count_8','count_9','count_0','count_work','count_arr','count_hash','count_and','count_apare','count_acor','count_plus','count_mult'
 ,'count_porc','count_equal','count_dot','count_dotc','count_apos','count_com','count_send','count_guionba','count_menor','count_dosp'
-,'count_offer','count_deal']].values
+,'count_offer','count_deal','count_join','count_vote','count_weig','count_lose']].values
 y = df['class']
 
 # Elijo mi clasificador.
@@ -213,6 +241,33 @@ clf = DecisionTreeClassifier(criterion='entropy')
 # de 10 folds.
 res = cross_val_score(clf, X, y, cv=10)
 print np.mean(res), np.std(res)
-# salida: 0.783040309346 0.0068052434174  (o similar)
 
+#gnb = GaussianNB()
+#gnb.fit(X, y)
+#res2 = cross_val_score(gnb, X, y, cv=10)
+#print "Con naive bayes"
+#print np.mean(res2), np.std(res2)
 
+#svc = SVC()
+#svc.fit(X, y)
+#res3 = cross_val_score(svc, X, y, cv=10)
+#print "Con SVM"
+#print np.mean(res3), np.std(res3)
+
+#knn = KNeighborsClassifier()
+#knn.fit(X, y)
+#res4 = cross_val_score(knn, X, y, cv=10)
+#print "Con Knn"
+#print np.mean(res4), np.std(res4)
+
+param_grid = {"max_depth": [1,2,3,4,5,6,7,8,9,10,20,50],
+              "max_features": [1,2,3,4,5,6,7,8,9,10,20,50],
+              "min_samples_split": [1,2,3,4,5,6,7,8,9,10,20,50],
+              "criterion": ["gini", "entropy"]}
+grid_search = GridSearchCV(clf, param_grid=param_grid)
+grid_search.fit(X, y)
+
+print(grid_search.best_score_)
+print ("--")
+print ("--")
+print(grid_search.best_params_)
