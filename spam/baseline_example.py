@@ -260,9 +260,9 @@ print np.mean(res), np.std(res)
 #print "Con Knn"
 #print np.mean(res4), np.std(res4)
 
-param_grid = {"max_depth": [1,2,3,4,5,6,7,8,9,10,20,50],
-              "max_features": [1,2,3,4,5,6,7,8,9,10,20,50],
-              "min_samples_split": [1,2,3,4,5,6,7,8,9,10,20,50],
+param_grid = {"max_depth": [1,2,3,4,10,20,30,40],
+              "max_features": [10,20,50],
+              "min_samples_split": [1,3,5,7,9,11],
               "criterion": ["gini", "entropy"]}
 grid_search = GridSearchCV(clf, param_grid=param_grid)
 grid_search.fit(X, y)
