@@ -13,8 +13,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.grid_search import GridSearchCV
 
 # Leo los mails (poner los paths correctos).
-ham_txt = json.load(open('../dataset_dev/ham_dev.json'))
-spam_txt = json.load(open('../dataset_dev/spam_dev.json'))
+print 'Cargando ham'
+ham_txt = json.load(open('/media/libre/dataset_dev/ham_dev.json'))
+print 'Cargando spam'
+spam_txt = json.load(open('/media/libre/dataset_dev/spam_dev.json'))
 
 # Imprimo un mail de ham y spam como muestra.
 #print ham_txt[0]
@@ -206,6 +208,15 @@ df['count_guionba'] = map(count_guionba, df.text)
 def count_menor(txt): return txt.count("<")
 df['count_menor'] = map(count_menor, df.text)
 
+def count_menora(txt): return txt.count("<a")
+df['count_menora'] = map(count_menora, df.text)
+
+def count_menorp(txt): return txt.count("<p")
+df['count_menorp'] = map(count_menorp, df.text)
+
+
+
+
 def count_dosp(txt): return txt.count(":")
 df['count_dosp'] = map(count_dosp, df.text)
 
@@ -221,16 +232,30 @@ df['count_cum'] = map(count_cum, df.text)
 def count_huge(txt): return txt.count("huge")
 df['count_huge'] = map(count_huge, df.text)
 
+def count_ref(txt): return txt.count("href")
+df['count_ref'] = map(count_ref, df.text)
+
+def count_from(txt): return txt.count("from")
+df['count_from'] = map(count_from, df.text)
+
+def count_id(txt): return txt.count("id")
+df['count_id'] = map(count_id, df.text)
+
+def count_px(txt): return txt.count("px")
+df['count_px'] = map(count_px, df.text)
+
+
+
 #to do: las palabras que se cuentan contarlas primero haciendo lowercase (quizas es mejor preprocesar los jsons haciendo todo lowercase)
 # hacer que fr33 cuente como free
 
 
 # Preparo data para clasificar
-X = df[['len','count_mm','count_n','count_td','count_by', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free','count_FREE',
+X = df[['len','count_mm','count_ref','count_guionba','count_menorp','count_menora', 'count_n','count_td','count_by','count_px','count_from','count_id', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free','count_FREE',
 'count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_EARN','count_MONEY','count_now','count_NOW','count_help',
 'count_excl','count_preg','count_dol','count_dollar','count_dollars','count_1','count_2','count_3','count_4','count_5','count_6','count_7'
 ,'count_8','count_9','count_0','count_work','count_arr','count_hash','count_and','count_apare','count_acor','count_plus','count_mult'
-,'count_porc','count_equal','count_dot','count_dotc','count_apos','count_com','count_send','count_guionba','count_menor','count_dosp'
+,'count_porc','count_equal','count_dot','count_dotc','count_apos','count_com','count_send','count_menor','count_dosp'
 ,'count_offer','count_deal','count_join','count_vote','count_weig','count_lose']].values
 y = df['class']
 
