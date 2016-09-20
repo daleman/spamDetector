@@ -11,6 +11,8 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.grid_search import GridSearchCV
+from sklearn.feature_selection import RFE
+from sklearn.feature_selection import RFECV
 
 # Leo los mails (poner los paths correctos).
 print 'Cargando ham'
@@ -386,6 +388,10 @@ clf = DecisionTreeClassifier()
 res = cross_val_score(clf, X, y, cv=10)
 print np.mean(res), np.std(res)
 
+selector = RFE(clf, 48, step=1,verbose = 5)
+selector = selector.fit(X, y)
+print zip(selector.support_,df.columns.values)
+print zip(selector.ranking_,df.columns.values)
 
 
 #gnb = GaussianNB()
