@@ -330,6 +330,34 @@ print '90 atributos'
 def count_HTML(txt): return txt.count("HTML")
 df['count_HTML'] = map(count_HTML, df.text)
 
+def count_0600(txt): return txt.count("-0600\nReceived:")
+df['count_0600'] = map(count_0600, df.text)
+
+def count_2002(txt): return txt.count("2002")
+df['count_2002'] = map(count_2002, df.text)
+
+def count_nahou(txt): return txt.count("nahou-mscnx06p.corp.enron.com")
+df['count_nahou'] = map(count_nahou, df.text)
+
+def count_with(txt): return txt.count("with")
+df['count_with'] = map(count_with, df.text)
+
+def count_your(txt): return txt.count("your")
+df['count_your'] = map(count_your, df.text)
+
+def count_0800(txt): return txt.count("-0800\nReceived:")
+df['count_0800'] = map(count_0800, df.text)
+
+def count_unv(txt): return txt.count("(unverified)")
+df['count_unv'] = map(count_unv, df.text)
+
+def count_sat(txt): return txt.count('Sat,')
+df['count_sat'] = map(count_sat, df.text)
+
+def count_sun(txt): return txt.count('Sun,')
+df['count_sun'] = map(count_sun, df.text)
+
+
 print 'Preparo X e y'
 
 
@@ -345,8 +373,8 @@ X = df[['len','count_td','count_by','count_ESMTP','count_menora', 'count_n','cou
 ,'count_dot','count_dotc','count_apos','count_com','count_send','count_menor','count_dosp','count_offer','count_deal','count_join'
 ,'count_vote','count_weig','count_lose','count_menos','count_sombrero','count_aparen','count_cparen','count_num','count_title','count_helvetica'
 ,'count_arial','count_nigeria','count_win','count_FREE','count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_MONEY','count_EARN'
-,'count_NOW','count_html','count_pill','count_hours','lprom','lmax','count_solid','count_font','count_tr','cout_microsoft'
-,'count_HTML']].values
+,'count_NOW','count_html','count_pill','count_hours','lprom','lmax','count_solid','count_font','count_tr','count_microsoft'
+,'count_HTML','count_0600','count_2002','count_nahou','count_with','count_your','count_0800','count_unv','count_sat','count_sun']].values
 y = df['class']
 
 # Elijo mi clasificador.
