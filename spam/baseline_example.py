@@ -14,9 +14,9 @@ from sklearn.grid_search import GridSearchCV
 
 # Leo los mails (poner los paths correctos).
 print 'Cargando ham'
-ham_txt = json.load(open('/media/libre/dataset_dev/ham_dev.json'))
+ham_txt = json.load(open('./dataset_dev/ham_dev.json'))
 print 'Cargando spam'
-spam_txt = json.load(open('/media/libre/dataset_dev/spam_dev.json'))
+spam_txt = json.load(open('./dataset_dev/spam_dev.json'))
 
 # Imprimo un mail de ham y spam como muestra.
 #print ham_txt[0]
@@ -64,6 +64,8 @@ df['count_penis'] = map(count_penis, df.text)
 def count_money(txt): return txt.count("money")
 df['count_money'] = map(count_money, df.text)
 
+print '10 atributos'
+
 def count_earn(txt): return txt.count("earn")
 df['count_earn'] = map(count_earn, df.text)
 
@@ -91,8 +93,11 @@ df['count_MONEY'] = map(count_MONEY, df.text)
 def count_EARN(txt): return txt.count("EARN")
 df['count_EARN'] = map(count_EARN, df.text)
 
+
 def count_now(txt): return txt.count("now")
 df['count_now'] = map(count_now, df.text)
+
+print '20 atributos'
 
 def count_NOW(txt): return txt.count("NOW")
 df['count_NOW'] = map(count_NOW, df.text)
@@ -124,6 +129,8 @@ df['count_dol'] = map(count_dol, df.text)
 def count_dollar(txt): return txt.count("dollar")
 df['count_dollar'] = map(count_dollar, df.text)
 
+print '30 atributos'
+
 def count_dollars(txt): return txt.count("dollars")
 df['count_dollars'] = map(count_dollars, df.text)
 
@@ -153,6 +160,9 @@ df['count_8'] = map(count_8, df.text)
 
 def count_9(txt): return txt.count("9")
 df['count_9'] = map(count_9, df.text)
+
+print '40 atributos'
+
 
 def count_0(txt): return txt.count("0")
 df['count_0'] = map(count_0, df.text)
@@ -184,6 +194,9 @@ df['count_mult'] = map(count_mult, df.text)
 def count_porc(txt): return txt.count("%")
 df['count_porc'] = map(count_porc, df.text)
 
+print '50 atributos'
+
+
 def count_equal(txt): return txt.count("=")
 df['count_equal'] = map(count_equal, df.text)
 
@@ -214,8 +227,7 @@ df['count_menora'] = map(count_menora, df.text)
 def count_menorp(txt): return txt.count("<p")
 df['count_menorp'] = map(count_menorp, df.text)
 
-
-
+print '60 atributos'
 
 def count_dosp(txt): return txt.count(":")
 df['count_dosp'] = map(count_dosp, df.text)
@@ -244,28 +256,109 @@ df['count_id'] = map(count_id, df.text)
 def count_px(txt): return txt.count("px")
 df['count_px'] = map(count_px, df.text)
 
+def count_upper(txt): return sum([c.isupper() for c in txt])
+df['count_upper'] = map(count_upper, df.text)
+
+print '70 atributos'
 
 
-#to do: las palabras que se cuentan contarlas primero haciendo lowercase (quizas es mejor preprocesar los jsons haciendo todo lowercase)
-# hacer que fr33 cuente como free
+def count_ESMTP(txt): return txt.count('ESMTP')
+df['count_ESMTP'] = map(count_ESMTP, df.text)
 
+def count_menos(txt): return txt.count('-')
+df['count_menos'] = map(count_menos, df.text)
+
+def count_sombrero(txt): return txt.count('^')
+df['count_sombrero'] = map(count_sombrero, df.text)
+
+def count_aparen(txt): return txt.count('(')
+df['count_aparen'] = map(count_aparen, df.text)
+
+
+def count_cparen(txt): return txt.count(')')
+df['count_cparen'] = map(count_cparen, df.text)
+
+def count_num(txt): return sum([c.isnumeric() for c in txt])
+df['count_num'] = map(count_num, df.text)
+
+def count_title(txt): return sum([c.istitle() for c in txt])
+df['count_title'] = map(count_title, df.text)
+
+def count_helvetica(txt): return txt.count('helvetica')
+df['count_helvetica'] = map(count_helvetica, df.text)
+
+def count_arial(txt): return txt.count('arial')
+df['count_arial'] = map(count_arial, df.text)
+
+def count_nigeria(txt): return txt.count('nigeria')
+df['count_nigeria'] = map(count_nigeria, df.text)
+
+print '80 atributos'
+
+def count_win(txt): return txt.count('win')
+df['count_win'] = map(count_win, df.text)
+
+def count_html(txt): return txt.count("html")
+df['count_html'] = map(count_html, df.text)
+
+def count_pill(txt): return txt.count("pill")
+df['count_pill'] = map(count_pill, df.text)
+
+def count_hours(txt): return txt.count("hours")
+df['count_hours'] = map(count_hours, df.text)
+
+def lprom(txt): return sum([len(c) for c in txt])/(len(txt))
+df['lprom'] = map(lprom, df.text)
+
+def lmax(txt): return max([len(c) for c in txt])
+df['lmax'] = map(lmax, df.text)
+
+def count_solid(txt): return txt.count("solid;")
+df['count_solid'] = map(count_solid, df.text)
+
+def count_font(txt): return txt.count("<font")
+df['count_font'] = map(count_font, df.text)
+
+def count_tr(txt): return txt.count("<tr>\n")
+df['count_tr'] = map(count_tr, df.text)
+
+def count_microsoft(txt): return txt.count("microsoft")
+df['count_microsoft'] = map(count_microsoft, df.text)
+
+print '90 atributos'
+
+def count_HTML(txt): return txt.count("HTML")
+df['count_HTML'] = map(count_HTML, df.text)
+
+print 'Preparo X e y'
+
+
+
+#lalongitud promedio de las palabras
 
 # Preparo data para clasificar
-X = df[['len','count_mm','count_ref','count_guionba','count_menorp','count_menora', 'count_n','count_td','count_by','count_px','count_from','count_id', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis','count_money','count_earn','count_free','count_FREE',
-'count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_EARN','count_MONEY','count_now','count_NOW','count_help',
-'count_excl','count_preg','count_dol','count_dollar','count_dollars','count_1','count_2','count_3','count_4','count_5','count_6','count_7'
-,'count_8','count_9','count_0','count_work','count_arr','count_hash','count_and','count_apare','count_acor','count_plus','count_mult'
-,'count_porc','count_equal','count_dot','count_dotc','count_apos','count_com','count_send','count_menor','count_dosp'
-,'count_offer','count_deal','count_join','count_vote','count_weig','count_lose']].values
+X = df[['len','count_td','count_by','count_ESMTP','count_menora', 'count_n','count_upper','count_mm','count_ref','count_guionba'
+,'count_menorp','count_px','count_from','count_id', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis'
+,'count_money','count_earn','count_free','count_now','count_help','count_excl','count_preg','count_dol','count_dollar','count_dollars'
+,'count_1','count_2','count_3','count_4','count_5','count_6','count_7','count_8','count_9','count_0'
+,'count_work','count_arr','count_hash','count_and','count_apare','count_acor','count_plus','count_mult','count_porc','count_equal'
+,'count_dot','count_dotc','count_apos','count_com','count_send','count_menor','count_dosp','count_offer','count_deal','count_join'
+,'count_vote','count_weig','count_lose','count_menos','count_sombrero','count_aparen','count_cparen','count_num','count_title','count_helvetica'
+,'count_arial','count_nigeria','count_win','count_FREE','count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_MONEY','count_EARN'
+,'count_NOW','count_html','count_pill','count_hours','lprom','lmax','count_solid','count_font','count_tr','cout_microsoft'
+,'count_HTML']].values
 y = df['class']
 
 # Elijo mi clasificador.
-clf = DecisionTreeClassifier(criterion='entropy')
+print 'Creo el clasificador'
+clf = DecisionTreeClassifier()
 
 # Ejecuto el clasificador entrenando con un esquema de cross validation
 # de 10 folds.
 res = cross_val_score(clf, X, y, cv=10)
 print np.mean(res), np.std(res)
+
+
 
 #gnb = GaussianNB()
 #gnb.fit(X, y)
@@ -285,14 +378,15 @@ print np.mean(res), np.std(res)
 #print "Con Knn"
 #print np.mean(res4), np.std(res4)
 
-param_grid = {"max_depth": [1,2,3,4,10,20,30,40],
-              "max_features": [10,20,50],
-              "min_samples_split": [1,3,5,7,9,11],
-              "criterion": ["gini", "entropy"]}
-grid_search = GridSearchCV(clf, param_grid=param_grid)
-grid_search.fit(X, y)
+#param_grid = {"max_depth": [1,2,3,4,10,20,30,40],
+#              "max_features": [10,20,50],
+#              "min_samples_split": [1,3,5,7,9,11],
+#              "criterion": ["gini", "entropy"]}
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1)
+#grid_search.fit(X, y)
 
-print(grid_search.best_score_)
-print ("--")
-print ("--")
-print(grid_search.best_params_)
+#print(grid_search.best_score_)
+#print ("--")
+#print ("--")
+#print(grid_search.best_params_)
+
