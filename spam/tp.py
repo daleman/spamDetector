@@ -23,6 +23,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.grid_search import GridSearchCV
 from sklearn.feature_selection import RFE
 from sklearn.feature_selection import RFECV
+from sklearn.ensemble import RandomForestClassifier
+		
 
 #metodos = Dtree, Rforest, Knn, Nbayes, Svc 
 
@@ -403,3 +405,64 @@ if __name__ == '__main__':
 
 	for i in range(len(dnames)):
 		df[dnames[i]] = map(dfuncs[i], df.text)
+	
+	# Preparo data para clasificar
+	X = df[dnames].values
+	y = df['class']
+
+	
+	if metodo == 'Dtree':
+		clf = DecisionTreeClassifier()
+	elif metodo == 'Rforest':
+		clf = RandomForestClassifier()
+	elif metodo == 'Knn':
+		clf = KNeighborsClassifier()
+		clf.fit(X, y)
+	elif metodo == 'Nbayes':
+		clf = GaussianNB()
+		clf.fit(X, y)
+	elif metodo == 'Svc':
+		clf = SVC()
+		clf.fit(X, y)
+
+	res = cross_val_score(clf, X, y, cv=10)
+	print np.mean(res), np.std(res)
+
+
+
+# Elijo mi clasificador.
+#clf = DecisionTreeClassifier()
+
+
+
+# Ejecuto el clasificador entrenando con un esquema de cross validation
+# de 10 folds.
+res = cross_val_score(clf, X, y, cv=10)
+print np.mean(res), np.std(res)
+
+#selector = RFE(clf, 48, step=1,verbose = 5)
+#selector = selector.fit(X, y)
+#print zip(selector.support_,df.columns.values)
+#print zip(selector.ranking_,df.columns.values)
+
+
+
+
+
+
+
+
+#param_grid = {"max_depth": [1,2,3,4,10,20,30,40],
+#              "max_features": [10,20,50],
+#              "min_samples_split": [1,3,5,7,9,11],
+#              "criterion": ["gini", "entropy"]}
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1)
+#grid_search.fit(X, y)
+
+#print(grid_search.best_score_)
+#print ("--")
+#print ("--")
+#print(grid_search.best_params_)
+
+
+
