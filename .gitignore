@@ -1,2 +1,5 @@
 spam/dataset_dev/*
 spam/dataset_dev_full/*
+informe/*.aux
+informe/*.toc
+informe/*.log
