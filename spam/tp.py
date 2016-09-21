@@ -6,7 +6,7 @@
 """Modulo de TP Spam Detector.
 
 
-python tp.py metodo parametros
+python tp.py [Gsearch] metodo cv [parametros]
 #metodos = Dtree, Rforest, Knn, Nbayes, Svc 
 
 """
@@ -128,8 +128,21 @@ def lprom(txt): return sum([len(c) for c in txt])/(len(txt))
 def lmax(txt): return max([len(c) for c in txt])
 
 if __name__ == '__main__':
+	cv = 10
+	gs = False
 	if len(sys.argv) > 1:
 		metodo = sys.argv[1]
+		n = 2
+		if metodo == 'Gsearch':
+			if len(sys.argv) > n:
+				metodo = sys.argv[n]
+			else:
+				print u'Método inválido'
+				exit()
+			gs = True
+			n = 3
+		if len(sys.argv) > n:
+			cv = int(sys.argv[n])
 	else:
 		print u'¿Qué método querés?'
 		exit()
@@ -214,5 +227,14 @@ if __name__ == '__main__':
 		clf = SVC()
 		clf.fit(X, y)
 
-	res = cross_val_score(clf, X, y, cv=10)
+	if (gs):
+		# TODO: Tomar estos parámetros a partir de sys.argv[n:]
+		param_grid = {"max_depth": [1,2],
+									"max_features": [10,15],
+									"min_samples_split": [1,3],
+									"criterion": ["gini", "entropy"]}
+		clf = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1)
+		clf.fit(X, y)
+
+	res = cross_val_score(clf, X, y, cv=cv)
 	print np.mean(res), np.std(res)
