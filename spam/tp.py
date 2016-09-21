@@ -146,20 +146,18 @@ if __name__ == '__main__':
 		pass
 	elif metodo == 'Svc':
 		pass
-	else:
-		print u'Método inválido'
-		exit()
+	elif metodo == 'File':
 
-	# Leo los mails (poner los paths correctos).
-	print 'Cargando ham'
-	ham_txt = json.load(open('./dataset_dev/ham_dev.json'))
-	print 'Cargando spam'
-	spam_txt = json.load(open('./dataset_dev/spam_dev.json'))
+		# Leo los mails (poner los paths correctos).
+		print 'Cargando ham'
+		ham_txt = json.load(open('./dataset_dev/ham_dev.json'))
+		print 'Cargando spam'
+		spam_txt = json.load(open('./dataset_dev/spam_dev.json'))
 
-	df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
-	df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
+		df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
+		df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
 
-	dnames = ['len','count_td','count_by','count_ESMTP','count_menora', 'count_n','count_upper','count_mm','count_ref','count_guionba'
+		dnames = ['len','count_td','count_by','count_ESMTP','count_menora', 'count_n','count_upper','count_mm','count_ref','count_guionba'
 ,'count_menorp','count_px','count_from','count_id', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis'
 ,'count_money','count_earn','count_free','count_now','count_help','count_excl','count_preg','count_dol','count_dollar','count_dollars'
 ,'count_1','count_2','count_3','count_4','count_5','count_6','count_7','count_8','count_9','count_0'
@@ -170,7 +168,7 @@ if __name__ == '__main__':
 ,'count_NOW','count_html','count_pill','count_hours','lprom','lmax','count_solid','count_font','count_tr','count_microsoft'
 ,'count_HTML','count_0600','count_2002','count_nahou','count_with','count_your','count_0800','count_unv','count_sat','count_sun']
 
-	dfuncs = [len,count_td,count_by,count_ESMTP,count_menora, count_n,count_upper,count_mm,count_ref,count_guionba
+		dfuncs = [len,count_td,count_by,count_ESMTP,count_menora, count_n,count_upper,count_mm,count_ref,count_guionba
 ,count_menorp,count_px,count_from,count_id, count_spaces,count_cum,count_viagra,count_sex,count_vagina,count_penis
 ,count_money,count_earn,count_free,count_now,count_help,count_excl,count_preg,count_dol,count_dollar,count_dollars
 ,count_1,count_2,count_3,count_4,count_5,count_6,count_7,count_8,count_9,count_0
@@ -181,14 +179,23 @@ if __name__ == '__main__':
 ,count_NOW,count_html,count_pill,count_hours,lprom,lmax,count_solid,count_font,count_tr,count_microsoft
 ,count_HTML,count_0600,count_2002,count_nahou,count_with,count_your,count_0800,count_unv,count_sat,count_sun]
 
-	for i in range(len(dnames)):
-		df[dnames[i]] = map(dfuncs[i], df.text)
+		for i in range(len(dnames)):
+			df[dnames[i]] = map(dfuncs[i], df.text)
 	
-	# Preparo data para clasificar
-	X = df[dnames].values
-	y = df['class']
+		# Preparo data para clasificar
+		X = df[dnames].values
+		y = df['class']
 
-	
+		# TODO: Escribir x e y a un archivo
+		exit()
+	else:
+		print u'Método inválido'
+		exit()
+
+	# TODO: Generar x e y a partir de un archivo
+	X = ()
+	y = ()
+
 	if metodo == 'Dtree':
 		clf = DecisionTreeClassifier()
 	elif metodo == 'Rforest':
