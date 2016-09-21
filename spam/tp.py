@@ -32,7 +32,7 @@ def count_mm(txt): return txt.count("mailman.enron.com")
 def count_by(txt): return txt.count("by")
 #df['count_by'] = map(count_by, df.text)
 
-def count_td(txt): return count_ncsensitive(txt,'<td')
+def count_td(txt): return txt.count('<td')
 #df['count_td'] = map(count_td, df.text)
 
 def count_n(txt): return txt.count("\n")
