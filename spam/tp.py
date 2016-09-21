@@ -11,6 +11,7 @@ python tp.py metodo parametros
 
 """
 import sys
+import time
 import json
 import numpy as np
 import pandas as pd
@@ -24,13 +25,15 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.feature_selection import RFE
 from sklearn.feature_selection import RFECV
 from sklearn.ensemble import RandomForestClassifier
-		
-
-#metodos = Dtree, Rforest, Knn, Nbayes, Svc 
 
 def count_mm(txt): return txt.count("mailman.enron.com")
 def count_by(txt): return txt.count("by")
 def count_td(txt): return txt.count('<td')
+def count_font(txt): return txt.count("<font")
+def count_tr(txt): return txt.count("<tr>\n")
+def count_menor(txt): return txt.count("<")
+def count_menora(txt): return txt.count("<a")
+def count_menorp(txt): return txt.count("<p")
 def count_n(txt): return txt.count("\n")
 def count_spaces(txt): return txt.count(" ")
 def count_viagra(txt): return txt.count("viagra")
@@ -55,6 +58,14 @@ def count_lose(txt): return txt.count("lose")
 def count_weig(txt): return txt.count("weight")
 def count_vote(txt): return txt.count("vote")
 def count_join(txt): return txt.count("join")
+def count_send(txt): return txt.count("send")
+def count_offer(txt): return txt.count("offer")
+def count_deal(txt): return txt.count("deal")
+def count_cum(txt): return txt.count("cum")
+def count_huge(txt): return txt.count("huge")
+def count_from(txt): return txt.count("from")
+def count_pill(txt): return txt.count("pill")
+def count_hours(txt): return txt.count("hours")
 def count_preg(txt): return txt.count("?")
 def count_dol(txt): return txt.count("$")
 def count_dollar(txt): return txt.count("dollar")
@@ -83,39 +94,23 @@ def count_dot(txt): return txt.count(".")
 def count_dotc(txt): return txt.count(";")
 def count_apos(txt): return txt.count("'")
 def count_com(txt): return txt.count("\"")
-def count_send(txt): return txt.count("send")
 def count_guionba(txt): return txt.count("_")
-def count_menor(txt): return txt.count("<")
-def count_menora(txt): return txt.count("<a")
-def count_menorp(txt): return txt.count("<p")
 def count_dosp(txt): return txt.count(":")
-def count_offer(txt): return txt.count("offer")
-def count_deal(txt): return txt.count("deal")
-def count_cum(txt): return txt.count("cum")
-def count_huge(txt): return txt.count("huge")
 def count_ref(txt): return txt.count("href")
-def count_from(txt): return txt.count("from")
 def count_id(txt): return txt.count("id")
 def count_px(txt): return txt.count("px")
-def count_upper(txt): return sum([c.isupper() for c in txt])
 def count_ESMTP(txt): return txt.count('ESMTP')
 def count_menos(txt): return txt.count('-')
 def count_sombrero(txt): return txt.count('^')
 def count_aparen(txt): return txt.count('(')
 def count_cparen(txt): return txt.count(')')
-def count_num(txt): return sum([c.isnumeric() for c in txt])
-def count_title(txt): return sum([c.istitle() for c in txt])
 def count_helvetica(txt): return txt.count('helvetica')
 def count_arial(txt): return txt.count('arial')
 def count_nigeria(txt): return txt.count('nigeria')
 def count_win(txt): return txt.count('win')
 def count_HTML(txt): return txt.count("HTML")
 def count_html(txt): return txt.count("html")
-def count_pill(txt): return txt.count("pill")
-def count_hours(txt): return txt.count("hours")
 def count_solid(txt): return txt.count("solid;")
-def count_font(txt): return txt.count("<font")
-def count_tr(txt): return txt.count("<tr>\n")
 def count_microsoft(txt): return txt.count("microsoft")
 def count_0600(txt): return txt.count("-0600\nReceived:")
 def count_2002(txt): return txt.count("2002")
@@ -126,6 +121,9 @@ def count_0800(txt): return txt.count("-0800\nReceived:")
 def count_unv(txt): return txt.count("(unverified)")
 def count_sat(txt): return txt.count('Sat,')
 def count_sun(txt): return txt.count('Sun,')
+def count_upper(txt): return sum([c.isupper() for c in txt])
+def count_num(txt): return sum([c.isnumeric() for c in txt])
+def count_title(txt): return sum([c.istitle() for c in txt])
 def lprom(txt): return sum([len(c) for c in txt])/(len(txt))
 def lmax(txt): return max([len(c) for c in txt])
 
@@ -148,7 +146,7 @@ if __name__ == '__main__':
 		pass
 	elif metodo == 'File':
 
-		# Leo los mails (poner los paths correctos).
+		# Leo los mails
 		print 'Cargando ham'
 		ham_txt = json.load(open('./dataset_dev/ham_dev.json'))
 		print 'Cargando spam'
@@ -166,7 +164,8 @@ if __name__ == '__main__':
 ,'count_vote','count_weig','count_lose','count_menos','count_sombrero','count_aparen','count_cparen','count_num','count_title','count_helvetica'
 ,'count_arial','count_nigeria','count_win','count_FREE','count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_MONEY','count_EARN'
 ,'count_NOW','count_html','count_pill','count_hours','lprom','lmax','count_solid','count_font','count_tr','count_microsoft'
-,'count_HTML','count_0600','count_2002','count_nahou','count_with','count_your','count_0800','count_unv','count_sat','count_sun']
+,'count_HTML','count_0600','count_2002','count_nahou','count_with','count_your','count_0800','count_unv','count_sat','count_sun'
+,'count_huge']
 
 		dfuncs = [len,count_td,count_by,count_ESMTP,count_menora, count_n,count_upper,count_mm,count_ref,count_guionba
 ,count_menorp,count_px,count_from,count_id, count_spaces,count_cum,count_viagra,count_sex,count_vagina,count_penis
@@ -177,24 +176,29 @@ if __name__ == '__main__':
 ,count_vote,count_weig,count_lose,count_menos,count_sombrero,count_aparen,count_cparen,count_num,count_title,count_helvetica
 ,count_arial,count_nigeria,count_win,count_FREE,count_VIAGRA,count_SEX,count_VAGINA,count_PENIS,count_MONEY,count_EARN
 ,count_NOW,count_html,count_pill,count_hours,lprom,lmax,count_solid,count_font,count_tr,count_microsoft
-,count_HTML,count_0600,count_2002,count_nahou,count_with,count_your,count_0800,count_unv,count_sat,count_sun]
+,count_HTML,count_0600,count_2002,count_nahou,count_with,count_your,count_0800,count_unv,count_sat,count_sun
+,count_huge]
 
+		start_time = time.time()
+		print "Cargando atributos"
 		for i in range(len(dnames)):
+			print str(i) + " " + dnames[i]
 			df[dnames[i]] = map(dfuncs[i], df.text)
+			print("--- %s seconds ---" % (time.time() - start_time))
 	
 		# Preparo data para clasificar
 		X = df[dnames].values
 		y = df['class']
 
-		# TODO: Escribir x e y a un archivo
+		np.save('testX', X)
+		np.save('testy', y)
 		exit()
 	else:
 		print u'Método inválido'
 		exit()
 
-	# TODO: Generar x e y a partir de un archivo
-	X = ()
-	y = ()
+	X = np.load('testX.npy')	
+	y = np.load('testy.npy')
 
 	if metodo == 'Dtree':
 		clf = DecisionTreeClassifier()
