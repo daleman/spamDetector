@@ -21,15 +21,13 @@ import json
 import numpy as np
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.cross_validation import cross_val_score
-from sklearn.cross_validation import train_test_split
+from sklearn.cross_validation import (cross_val_score, train_test_split)
 from sklearn import datasets
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.grid_search import GridSearchCV
-from sklearn.feature_selection import RFE
-from sklearn.feature_selection import RFECV
+from sklearn.feature_selection import (RFE,RFECV)
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import ( accuracy_score, precision_score, recall_score, f1_score )
 import pickle
@@ -138,9 +136,9 @@ def lmax(txt): return max([len(c) for c in txt])
 def cargar_mails():		
 	# Leo los mails
 	print 'Cargando ham'
-	ham_txt = json.load(open('./dataset_dev/ham_dev.json'))
+	ham_txt = json.load(open('./dataset_dev_full/ham_dev.json'))
 	print 'Cargando spam'
-	spam_txt = json.load(open('./dataset_dev/spam_dev.json'))
+	spam_txt = json.load(open('./dataset_dev_full/spam_dev.json'))
 
 	df = pd.DataFrame(ham_txt+spam_txt, columns=['text'])
 	df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
@@ -182,35 +180,38 @@ def cargando_atributos(df):
 	start_time = time.time()
 	print "Cargando atributos"
 	for i in range(len(dnames)):
-#		print str(i) + " " + dnames[i]
+		print str(i) + " " + dnames[i]
 		df[dnames[i]] = map(dfuncs[i], df.text)
-#		print("--- %s seconds ---" % (time.time() - start_time))
+		print("--- %s seconds ---" % (time.time() - start_time))
 	return df, dnames
 
-def preparo_datos(df, dnames):
+def preparo_datos(df, dnames,name):
 	# Preparo data para clasificar
 	X = df[dnames].values
 	y = df['class']
 
-	np.save('trainX', X)
-	np.save('trainy', y)
+	np.save(name + 'X', X)
+	np.save(name + 'y', y)
 	return (X,y)
 
-def predecir(metodo, test):
-	df = pd.DataFrame(test, columns=['text'])
-	df, dnames = cargando_atributos(df)
+def predecir(metodo):
+	#df = pd.DataFrame(test, columns=['text']) #
+	#df, dnames = cargando_atributos(df) 
+	testX = np.load('testX.npy')
 	clf = pickle.load(open(metodo + '_entrenado.pickle'))
-	predy = list(clf.predict(df[dnames].values))
-	f = open('testy.txt', 'r')
-	testy = f.read().split(',')
-	f.close()
-	print testy
-	print predy
+	#predy = list(clf.predict(df[dnames].values)) 
+	predy = list(clf.predict(testX))
+	#f = open('testy.txt', 'r')
+	#testy = f.read().split(',')
+	testy = np.load('testy.npy')
+	#f.close()
+	#print testy
+	#print predy
 	testn = map(lambda x : ( 1 if x == 'ham' else 0 ), testy)
 	predn = map(lambda x : ( 1 if x == 'ham' else 0 ), predy)
 	print("\tPrecision: %1.3f" % precision_score(testn, predn))
 	print("\tRecall: %1.3f" % recall_score(testn, predn))
-	print("\tF1: %1.3f\n" % f1_score(testn, predn))
+	print("\tF1: %1.3f" % f1_score(testn, predn))
 	print("\tAccuaracy: %1.3f\n" % accuracy_score(testn, predn))
 
 if __name__ == '__main__':
@@ -233,13 +234,13 @@ if __name__ == '__main__':
 			else:
 				print u'Método inválido'
 				exit()
-			n = n + 1
-			if len(sys.argv) > n:
-				test = json.load(open(sys.argv[n]))
-			else:
-				print u'¿Cuál es la base de test?'
+		#	n = n + 1
+		#	if len(sys.argv) > n:
+		#		test = json.load(open(sys.argv[n]))
+		#	else:
+		#		print u'¿Cuál es la base de test?'
 				exit()
-			predecir(metodo, test)
+			predecir(metodo)
 			exit()
 		if len(sys.argv) > n:
 			cv = int(sys.argv[n])
@@ -261,22 +262,26 @@ if __name__ == '__main__':
 		df = cargar_mails()
 		train, test = train_test_split(df, test_size = 0.2)
 		train, dnames = cargando_atributos(train)
-		(X,y) = preparo_datos(train, dnames)
-		test_file = "["
-		for i in test['text']:
-			test_file += "\"" + i.replace("\r","\\r").replace("\n","\\n").replace("\t","\\t").replace("\"","\\\"") + "\","
-		test_file = test_file[:len(test_file)-1] # elimino la última coma
-		test_file += "]"
-		f = open('test.json', 'w')
-		f.write(test_file)
-		f.close()
-		test_file = ""
-		for i in test['class']:
-			test_file += i + ","
-		test_file = test_file[:len(test_file)-1] # elimino la última coma
-		f = open('testy.txt', 'w')
-		f.write(test_file)
-		f.close()
+		(X,y) = preparo_datos(train, dnames,'train')
+		
+		test, dnames = cargando_atributos(test)
+		(testX,testy) = preparo_datos(test, dnames,'test')
+		
+		#test_file = "["
+		#for i in test['text']:
+		#	test_file += "\"" + i.replace("\r","\\r").replace("\n","\\n").replace("\t","\\t").replace("\"","\\\"") + "\","
+		#test_file = test_file[:len(test_file)-1] # elimino la última coma
+		#test_file += "]"
+		#f = open('test.json', 'w')
+		#f.write(test_file)
+		#f.close()
+		#test_file = ""
+		#for i in test['class']:
+	#		test_file += i + ","
+		#test_file = test_file[:len(test_file)-1] # elimino la última coma
+		#f = open('testy.txt', 'w')
+		#f.write(test_file)
+		#f.close()
 		exit()
 	else:
 		print u'Método inválido'
