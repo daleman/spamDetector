@@ -28,8 +28,8 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.grid_search import GridSearchCV
 from sklearn.feature_selection import (RFE,RFECV)
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import ( accuracy_score, precision_score, recall_score, f1_score )
+from sklearn.ensemble import ( RandomForestClassifier , ExtraTreesClassifier )
+from sklearn.metrics import ( accuracy_score, precision_score, recall_score, f1_score,roc_auc_score )
 import pickle
 
 def count_mm(txt): return txt.count("mailman.enron.com")
@@ -213,6 +213,8 @@ def predecir(metodo):
 	print("\tRecall: %1.3f" % recall_score(testn, predn))
 	print("\tF1: %1.3f" % f1_score(testn, predn))
 	print("\tAccuaracy: %1.3f\n" % accuracy_score(testn, predn))
+	print("\tRoc Area Under Curve: %1.3f\n" % roc_auc_score(testn, predn))
+
 
 if __name__ == '__main__':
 	cv = 10
@@ -257,6 +259,8 @@ if __name__ == '__main__':
 	elif metodo == 'Nbayes':
 		pass
 	elif metodo == 'Svc':
+		pass
+	elif metodo == 'Etree':
 		pass
 	elif metodo == 'File':
 		df = cargar_mails()
@@ -303,22 +307,98 @@ if __name__ == '__main__':
 		clf = GaussianNB()
 		clf.fit(X, y)
 	elif metodo == 'Svc':
-		clf = SVC()
+		clf = SVC(max_iter=10000)
 		clf.fit(X, y)
-
+	elif metodo == 'Etree':
+		clf = ExtraTreesClassifier()
+		clf.fit(X,y)
+	
 	if (gs):
-		# TODO: Tomar estos parámetros a partir de sys.argv[n:]
-		param_grid = {"max_depth": [1,2],
-									"max_features": [10,15],
-									"min_samples_split": [1,3],
-									"criterion": ["gini", "entropy"]}
-		clf = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1)
+		param_grid = {}
+		if metodo == 'Dtree':
+			param_grid = {"max_depth": [5,7,10,15,None],
+				"max_features": [10,15,30,50],
+				"min_samples_split": [1,3],
+				"criterion": ["gini", "entropy"]}
+		elif metodo == 'Rforest':
+			param_grid = {"max_depth": [1,2],
+				"max_features": [10,15],
+				"min_samples_split": [1,3],
+				"criterion": ["gini", "entropy"]}
+		elif metodo == 'Knn':
+			param_grid = {"max_depth": [1,2],
+				"max_features": [10,15],
+				"min_samples_split": [1,3],
+				"criterion": ["gini", "entropy"]}
+		elif metodo == 'Nbayes':
+			param_grid = {"max_depth": [1,2],
+				"max_features": [10,15],
+				"min_samples_split": [1,3],
+				"criterion": ["gini", "entropy"]}
+		clf = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2)
+		X = np.load('trainX.npy')	
+		y = np.load('trainy.npy')
 		clf.fit(X, y)
+		print clf.best_params_
+		
+		metodo = "GS_" + metodo
 
 	guardar_modelo(metodo)
 
 	res = cross_val_score(clf, X, y, cv=cv)
 	print np.mean(res), np.std(res)
+
+#http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
+#-criterion
+#-splitter
+#-max_features
+#-max_depth
+#-min_samples_split
+#-min_samples_leaf
+#-min_weight_fraction_leaf
+#-max_leaf_nodes
+#-class_weight
+#-random_state
+#-presort
+#http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+#-n_neighbors
+#-weights
+#-algorithm
+#-leaf_size
+#-metric
+#-p
+#-metric_params
+#-n_jobs
+#http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+#-n_estimators
+#-criterion
+#-max_features
+#-max_depth
+#-min_samples_split
+#-min_samples_leaf
+#-min_weight_fraction_leaf
+#-max_leaf_nodes
+#-bootstrap
+#-oob_score
+#-n_jobs
+#-random_state
+#-verbose
+#-warm_start
+#-class_weight
+#http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
+#-C
+#-kernel
+#-degree
+#-gamma
+#-coef0
+#-probability
+#-shriniking
+#-tol
+#-cache_size
+#-class_weight
+#-max_iter
+#-decision_function_shape 
+#-random_state
 
 
 
