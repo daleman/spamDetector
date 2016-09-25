@@ -3,18 +3,20 @@
 
 # Aprendizaje Automatico - DC, FCEN, UBA
 # Segundo cuatrimestre 2016
+
 """Modulo de TP Spam Detector.
 
-Cargar datos:
-	python tp.py File
-Entrenar un modelo:
-	python tp.py [Gsearch] metodo [cv]
-Predecir:
+*Cargar datos:
+	python tp.py File [dimension [n=10]]
+*Entrenar un modelo:
+	python tp.py [Gsearch] metodo [cv=10]
+*Predecir:
 	python tp.py Test metodo base
 
-	metodos = Dtree, Rforest, Knn, Nbayes, Svc 
-
+	metodos = Dtree, Rforest, Etree, Knn, Nbayes, Svc 
+	dimensiones = PCA, iPCA, ICA, RFE
 """
+
 import sys
 import time
 import json
@@ -30,7 +32,20 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.feature_selection import (RFE,RFECV)
 from sklearn.ensemble import ( RandomForestClassifier , ExtraTreesClassifier )
 from sklearn.metrics import ( accuracy_score, precision_score, recall_score, f1_score,roc_auc_score )
+from sklearn.decomposition import PCA, IncrementalPCA, FastICA
 import pickle
+
+dnames = ['len','count_td','count_by','count_ESMTP','count_menora', 'count_n','count_upper','count_mm','count_ref','count_guionba'
+,'count_menorp','count_px','count_from','count_id', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis'
+,'count_money','count_earn','count_free','count_now','count_help','count_excl','count_preg','count_dol','count_dollar','count_dollars'
+,'count_1','count_2','count_3','count_4','count_5','count_6','count_7','count_8','count_9','count_0'
+,'count_work','count_arr','count_hash','count_and','count_apare','count_acor','count_plus','count_mult','count_porc','count_equal'
+,'count_dot','count_dotc','count_apos','count_com','count_send','count_menor','count_dosp','count_offer','count_deal','count_join'
+,'count_vote','count_weig','count_lose','count_menos','count_sombrero','count_aparen','count_cparen','count_num','count_title','count_helvetica'
+,'count_arial','count_nigeria','count_win','count_FREE','count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_MONEY','count_EARN'
+,'count_NOW','count_html','count_pill','count_hours','lprom','lmax','count_solid','count_font','count_tr','count_microsoft'
+,'count_HTML','count_0600','count_2002','count_nahou','count_with','count_your','count_0800','count_unv','count_sat','count_sun'
+,'count_huge']
 
 def count_mm(txt): return txt.count("mailman.enron.com")
 def count_by(txt): return txt.count("by")
@@ -133,8 +148,7 @@ def count_title(txt): return sum([c.istitle() for c in txt])
 def lprom(txt): return sum([len(c) for c in txt])/(len(txt))
 def lmax(txt): return max([len(c) for c in txt])
 
-def cargar_mails():		
-	# Leo los mails
+def cargar_mails():
 	print 'Cargando ham'
 	ham_txt = json.load(open('./dataset_dev_full/ham_dev.json'))
 	print 'Cargando spam'
@@ -152,19 +166,6 @@ def guardar_modelo(metodo):
 	return
 
 def cargando_atributos(df):
-
-	dnames = ['len','count_td','count_by','count_ESMTP','count_menora', 'count_n','count_upper','count_mm','count_ref','count_guionba'
-,'count_menorp','count_px','count_from','count_id', 'count_spaces','count_cum','count_viagra','count_sex','count_vagina','count_penis'
-,'count_money','count_earn','count_free','count_now','count_help','count_excl','count_preg','count_dol','count_dollar','count_dollars'
-,'count_1','count_2','count_3','count_4','count_5','count_6','count_7','count_8','count_9','count_0'
-,'count_work','count_arr','count_hash','count_and','count_apare','count_acor','count_plus','count_mult','count_porc','count_equal'
-,'count_dot','count_dotc','count_apos','count_com','count_send','count_menor','count_dosp','count_offer','count_deal','count_join'
-,'count_vote','count_weig','count_lose','count_menos','count_sombrero','count_aparen','count_cparen','count_num','count_title','count_helvetica'
-,'count_arial','count_nigeria','count_win','count_FREE','count_VIAGRA','count_SEX','count_VAGINA','count_PENIS','count_MONEY','count_EARN'
-,'count_NOW','count_html','count_pill','count_hours','lprom','lmax','count_solid','count_font','count_tr','count_microsoft'
-,'count_HTML','count_0600','count_2002','count_nahou','count_with','count_your','count_0800','count_unv','count_sat','count_sun'
-,'count_huge']
-
 	dfuncs = [len,count_td,count_by,count_ESMTP,count_menora, count_n,count_upper,count_mm,count_ref,count_guionba
 ,count_menorp,count_px,count_from,count_id, count_spaces,count_cum,count_viagra,count_sex,count_vagina,count_penis
 ,count_money,count_earn,count_free,count_now,count_help,count_excl,count_preg,count_dol,count_dollar,count_dollars
@@ -177,44 +178,58 @@ def cargando_atributos(df):
 ,count_HTML,count_0600,count_2002,count_nahou,count_with,count_your,count_0800,count_unv,count_sat,count_sun
 ,count_huge]
 
-	start_time = time.time()
+	#start_time = time.time()
 	print "Cargando atributos"
 	for i in range(len(dnames)):
-		print str(i) + " " + dnames[i]
+	#	print str(i) + " " + dnames[i]
 		df[dnames[i]] = map(dfuncs[i], df.text)
-		print("--- %s seconds ---" % (time.time() - start_time))
-	return df, dnames
-
-def preparo_datos(df, dnames,name):
-	# Preparo data para clasificar
+	#	print("--- %s seconds ---" % (time.time() - start_time))
 	X = df[dnames].values
 	y = df['class']
+	return X, y
 
-	np.save(name + 'X', X)
-	np.save(name + 'y', y)
-	return (X,y)
+def leer_base(metodo, n):
+	df = cargar_mails()
+	train, test = train_test_split(df, test_size = 0.2)
+	trainX, trainy = cargando_atributos(train)
+	testX, testy = cargando_atributos(test)
+	if metodo == "PCA":
+		pca = PCA(n_components=n)
+		pca.fit(trainX)
+		trainX = pca.transform(trainX)
+		testX = pca.transform(testX)
+	elif metodo == "iPCA":
+		pca = IncrementalPCA(n_components=n)
+		pca.fit(trainX)
+		trainX = pca.transform(trainX)
+		testX = pca.transform(testX)
+	elif metodo == "ICA":
+		ica = FastICA(n_components=n)
+		ica.fit(trainX)
+		trainX = ica.transform(trainX)
+		testX = ica.transform(testX)
+	#elif metodo == "RFE":
+		#rfe = RFE()
+		#rfe.fit(trainX)
+		#trainX = rfe.transform(trainX)
+		#testX = rfe.transform(testX)
+	np.save('trainX', trainX)
+	np.save('trainy', trainy)
+	np.save('testX', testX)
+	np.save('testy', testy)
 
 def predecir(metodo):
-	#df = pd.DataFrame(test, columns=['text']) #
-	#df, dnames = cargando_atributos(df) 
 	testX = np.load('testX.npy')
 	clf = pickle.load(open(metodo + '_entrenado.pickle'))
-	#predy = list(clf.predict(df[dnames].values)) 
 	predy = list(clf.predict(testX))
-	#f = open('testy.txt', 'r')
-	#testy = f.read().split(',')
 	testy = np.load('testy.npy')
-	#f.close()
-	#print testy
-	#print predy
 	testn = map(lambda x : ( 1 if x == 'ham' else 0 ), testy)
 	predn = map(lambda x : ( 1 if x == 'ham' else 0 ), predy)
 	print("\tPrecision: %1.3f" % precision_score(testn, predn))
 	print("\tRecall: %1.3f" % recall_score(testn, predn))
 	print("\tF1: %1.3f" % f1_score(testn, predn))
-	print("\tAccuaracy: %1.3f\n" % accuracy_score(testn, predn))
+	print("\tAccuaracy: %1.3f" % accuracy_score(testn, predn))
 	print("\tRoc Area Under Curve: %1.3f\n" % roc_auc_score(testn, predn))
-
 
 if __name__ == '__main__':
 	cv = 10
@@ -222,74 +237,49 @@ if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		metodo = sys.argv[1]
 		n = 2
+		# FILE
+		if metodo == 'File':
+			metodo = "none"
+			dims = 10
+			if len(sys.argv) > n:
+				metodo = sys.argv[n]
+				if metodo != "PCA" and metodo != "ICA" and metodo != "RFE" and metodo != "iPCA":
+					print u'Dimensión inválida'
+					exit()
+				n = n + 1
+				if len(sys.argv) > n:
+					dims = int(sys.argv[n])
+					n = n + 1
+			leer_base(metodo, dims)
+			exit()
+		# TEST
+		if metodo == 'Test':
+			if len(sys.argv) > n:
+				metodo = sys.argv[n]
+				n = n + 1
+			else:
+				print u'¿Qué método querés?'
+				exit()
+			predecir(metodo)
+			exit()
+		# TRAIN
 		if metodo == 'Gsearch':
 			if len(sys.argv) > n:
 				metodo = sys.argv[n]
 			else:
-				print u'Método inválido'
+				print u'¿Qué método querés?'
 				exit()
 			gs = True
 			n = n + 1
-		elif metodo == 'Test':
-			if len(sys.argv) > n:
-				metodo = sys.argv[n]
-			else:
-				print u'Método inválido'
-				exit()
-		#	n = n + 1
-		#	if len(sys.argv) > n:
-		#		test = json.load(open(sys.argv[n]))
-		#	else:
-		#		print u'¿Cuál es la base de test?'
-				exit()
-			predecir(metodo)
-			exit()
-		if len(sys.argv) > n:
-			cv = int(sys.argv[n])
 	else:
 		print u'¿Qué método querés?'
 		exit()
-
-	if metodo == 'Dtree':
-		pass
-	elif metodo == 'Rforest':
-		pass
-	elif metodo == 'Knn':
-		pass
-	elif metodo == 'Nbayes':
-		pass
-	elif metodo == 'Svc':
-		pass
-	elif metodo == 'Etree':
-		pass
-	elif metodo == 'File':
-		df = cargar_mails()
-		train, test = train_test_split(df, test_size = 0.2)
-		train, dnames = cargando_atributos(train)
-		(X,y) = preparo_datos(train, dnames,'train')
-		
-		test, dnames = cargando_atributos(test)
-		(testX,testy) = preparo_datos(test, dnames,'test')
-		
-		#test_file = "["
-		#for i in test['text']:
-		#	test_file += "\"" + i.replace("\r","\\r").replace("\n","\\n").replace("\t","\\t").replace("\"","\\\"") + "\","
-		#test_file = test_file[:len(test_file)-1] # elimino la última coma
-		#test_file += "]"
-		#f = open('test.json', 'w')
-		#f.write(test_file)
-		#f.close()
-		#test_file = ""
-		#for i in test['class']:
-	#		test_file += i + ","
-		#test_file = test_file[:len(test_file)-1] # elimino la última coma
-		#f = open('testy.txt', 'w')
-		#f.write(test_file)
-		#f.close()
-		exit()
-	else:
+	if metodo != 'Dtree' and metodo != 'Rforest' and metodo != 'Knn' and metodo != 'Nbayes' and metodo != 'Svc':
 		print u'Método inválido'
 		exit()
+	if len(sys.argv) > n:
+		cv = int(sys.argv[n])
+		n = n + 1
 
 	X = np.load('trainX.npy')	
 	y = np.load('trainy.npy')
@@ -309,9 +299,6 @@ if __name__ == '__main__':
 	elif metodo == 'Svc':
 		clf = SVC(max_iter=10000)
 		clf.fit(X, y)
-	elif metodo == 'Etree':
-		clf = ExtraTreesClassifier()
-		clf.fit(X,y)
 	
 	if (gs):
 		param_grid = {}
@@ -399,6 +386,7 @@ if __name__ == '__main__':
 #-max_iter
 #-decision_function_shape 
 #-random_state
+
 
 
 
