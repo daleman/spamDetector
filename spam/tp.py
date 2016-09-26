@@ -8,6 +8,8 @@
 
 *Cargar datos:
 	python tp.py File [dimension [n=10]]
+*Reducir Dimensiones:
+	python tp.py Red dimension [n=10]
 *Entrenar un modelo:
 	python tp.py [Gsearch] metodo [cv=10]
 *Predecir:
@@ -260,6 +262,9 @@ if __name__ == '__main__':
 				if len(sys.argv) > n:
 					dims = int(sys.argv[n])
 					n = n + 1
+			else:
+				print u'¿Qué dimension querés?'
+				exit()				
 			red_dim(metodo, dims)
 			exit()
 		# TEST
