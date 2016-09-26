@@ -188,11 +188,19 @@ def cargando_atributos(df):
 	y = df['class']
 	return X, y
 
-def leer_base(metodo, n):
+def leer_base():
 	df = cargar_mails()
 	train, test = train_test_split(df, test_size = 0.2)
 	trainX, trainy = cargando_atributos(train)
 	testX, testy = cargando_atributos(test)
+	np.save('trainX', trainX)
+	np.save('trainy', trainy)
+	np.save('testX', testX)
+	np.save('testy', testy)
+
+def red_dim(metodo, n):
+	trainX = 	np.load('trainX.npy')
+	testX = 	np.load('testX.npy')		
 	if metodo == "PCA":
 		pca = PCA(n_components=n)
 		pca.fit(trainX)
@@ -213,10 +221,8 @@ def leer_base(metodo, n):
 		#rfe.fit(trainX)
 		#trainX = rfe.transform(trainX)
 		#testX = rfe.transform(testX)
-	np.save('trainX', trainX)
-	np.save('trainy', trainy)
-	np.save('testX', testX)
-	np.save('testy', testy)
+	np.save('trainXt', trainX)
+	np.save('testXt', testX)
 
 def predecir(metodo):
 	testX = np.load('testX.npy')
@@ -239,6 +245,10 @@ if __name__ == '__main__':
 		n = 2
 		# FILE
 		if metodo == 'File':
+			leer_base()
+			exit()
+		# RED
+		if metodo == 'Red':
 			metodo = "none"
 			dims = 10
 			if len(sys.argv) > n:
@@ -250,7 +260,7 @@ if __name__ == '__main__':
 				if len(sys.argv) > n:
 					dims = int(sys.argv[n])
 					n = n + 1
-			leer_base(metodo, dims)
+			red_dim(metodo, dims)
 			exit()
 		# TEST
 		if metodo == 'Test':
@@ -281,8 +291,8 @@ if __name__ == '__main__':
 		cv = int(sys.argv[n])
 		n = n + 1
 
-	X = np.load('trainX.npy')	
-	y = np.load('trainy.npy')
+	X = np.load('trainXt.npy')	
+	y = np.load('trainyt.npy')
 
 	if metodo == 'Dtree':
 		clf = DecisionTreeClassifier()
