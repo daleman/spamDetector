@@ -435,7 +435,11 @@ if __name__ == '__main__':
 	if len(sys.argv) > n:
 		base = sys.argv[n]
 		n = n + 1
+	if len(sys.argv) > n:
+		maxiter = int(sys.argv[n])
+		n = n + 1
 
+	print "maxiter es " + str(maxiter)
 	X = np.load(base)
 	y = np.load('trainy.npy')
 
@@ -463,7 +467,7 @@ if __name__ == '__main__':
 		end = time.time()
 	elif metodo == 'Svc':
 		start = time.time()
-		clf = SVC(max_iter=10000)
+		clf = SVC(max_iter=maxiter)
 		clf.fit(X, y)
 		end = time.time()
 
@@ -505,7 +509,7 @@ if __name__ == '__main__':
 	d = datetime.datetime.now()
 	f = open("data.txt",'a')
 	f.write("<" + str(d.day) + "/" + str(d.month) + "/" + str(d.year) + " " + str(d.hour) + "hs>\n")
-	f.write("TRAIN " + metodo + " - " + base + "\n")
+	f.write("TRAIN " + metodo + " - " + base + "iter " + str(maxiter) + "\n")
 	f.write("T: " + str(end - start) + "\n")
 	f.close()
 	guardar_modelo(metodo, base)
