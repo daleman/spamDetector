@@ -20,7 +20,7 @@
 """
 
 import sys
-import time
+import time, datetime
 import json
 import numpy as np
 import pandas as pd
@@ -274,42 +274,56 @@ def leer_base():
 
 def red_dim(metodo, n):
 	trainX = 	np.load('trainX.npy')
-	testX = 	np.load('testX.npy')		
-	if metodo == "PCA":
-		pca = PCA(n_components=n)
-		pca.fit(trainX)
-		trainX = pca.transform(trainX)
-		testX = pca.transform(testX)
-	elif metodo == "iPCA":
-		pca = IncrementalPCA(n_components=n)
-		pca.fit(trainX)
-		trainX = pca.transform(trainX)
-		testX = pca.transform(testX)
-	elif metodo == "ICA":
-		ica = FastICA(n_components=n)
-		ica.fit(trainX)
-		trainX = ica.transform(trainX)
-		testX = ica.transform(testX)
-	#elif metodo == "RFE":
-		#rfe = RFE()
-		#rfe.fit(trainX)
-		#trainX = rfe.transform(trainX)
-		#testX = rfe.transform(testX)
-	np.save('trainX_' + metodo + str(n) , trainX)
-	np.save('testX_' + metodo + str(n), testX)
+	testX = 	np.load('testX.npy')
+	if metodo == "RFE":
+		clf = DecisionTreeClassifier()
+		rfe = RFECV(clf, step=1, cv=10, verbose=2)
+		trainy = np.load('trainy.npy')
+		rfe = rfe.fit(trainX, trainy)
+		l = zip(rfe.ranking_,dnames)
+		for i in sorted(l, key=lambda x: x[0]):
+			print i[1]
+	else:
+		if metodo == "PCA":
+			pca = PCA(n_components=n)
+			pca.fit(trainX)
+			trainX = pca.transform(trainX)
+			testX = pca.transform(testX)
+		elif metodo == "iPCA":
+			pca = IncrementalPCA(n_components=n)
+			pca.fit(trainX)
+			trainX = pca.transform(trainX)
+			testX = pca.transform(testX)
+		elif metodo == "ICA":
+			ica = FastICA(n_components=n)
+			ica.fit(trainX)
+			trainX = ica.transform(trainX)
+			testX = ica.transform(testX)
+		else:
+			print u'Dimensión inválida'
+			exit()
+		np.save('trainX_' + metodo + str(n) , trainX)
+		np.save('testX_' + metodo + str(n), testX)
 
 def predecir(metodo, base):
 	testX = np.load(base)
-	clf = pickle.load(open(metodo + base + '.pickle'))
+	clf = pickle.load(open(metodo + base.replace("test","train") + '.pickle'))
+	start = time.time()
 	predy = list(clf.predict(testX))
+	end = time.time()
 	testy = np.load('testy.npy')
 	testn = map(lambda x : ( 1 if x == 'ham' else 0 ), testy)
 	predn = map(lambda x : ( 1 if x == 'ham' else 0 ), predy)
-	print("\tPrecision: %1.3f" % precision_score(testn, predn))
-	print("\tRecall: %1.3f" % recall_score(testn, predn))
-	print("\tF1: %1.3f" % f1_score(testn, predn))
-	print("\tAccuaracy: %1.3f" % accuracy_score(testn, predn))
-	print("\tRoc Area Under Curve: %1.3f\n" % roc_auc_score(testn, predn))
+	d = datetime.datetime.now()
+	f = open("data.txt",'a')
+	f.write("<" + str(d.day) + "/" + str(d.month) + "/" + str(d.year) + " " + str(d.hour) + "hs>\n")
+	f.write(metodo + " - " + base + "\n")
+	f.write("T: " + str(end - start) + "\n")
+	f.write("P: %1.3f\n" % precision_score(testn, predn))
+	f.write("R: %1.3f\n" % recall_score(testn, predn))
+	f.write("F: %1.3f\n" % f1_score(testn, predn))
+	f.write("A: %1.3f\n" % accuracy_score(testn, predn))
+	f.write("R: %1.3f\n" % roc_auc_score(testn, predn))
 
 if __name__ == '__main__':
 	cv = 10
@@ -382,7 +396,7 @@ if __name__ == '__main__':
 		cv = int(sys.argv[n])
 		n = n + 1
 
-	X = np.load('trainXt.npy')	
+	X = np.load(base)	
 	y = np.load('trainy.npy')
 
 	if metodo == 'Dtree':
@@ -424,8 +438,6 @@ if __name__ == '__main__':
 				"min_samples_split": [1,3],
 				"criterion": ["gini", "entropy"]}
 		clf = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2)
-		X = np.load(base)	
-		y = np.load('trainy.npy')
 		clf.fit(X, y)
 		print clf.best_params_
 		
