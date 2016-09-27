@@ -439,33 +439,33 @@ if __name__ == '__main__':
 	X = np.load(base)
 	y = np.load('trainy.npy')
 
-  start = 0
-  end = 0
+	start = 0
+	end = 0
 	if metodo == 'Dtree':
 		clf = DecisionTreeClassifier()
-  	start = time.time()
+		start = time.time()
 		clf.fit(X, y)
-  	end = time.time()
+		end = time.time()
 	elif metodo == 'Rforest':
 		clf = RandomForestClassifier()
-  	start = time.time()
+		start = time.time()
 		clf.fit(X, y)
-  	end = time.time()
+		end = time.time()
 	elif metodo == 'Knn':
 		clf = KNeighborsClassifier()
-  	start = time.time()
+		start = time.time()
 		clf.fit(X, y)
-  	end = time.time()
+		end = time.time()
 	elif metodo == 'Nbayes':
-  	start = time.time()
+		start = time.time()
 		clf = GaussianNB()
 		clf.fit(X, y)
-  	end = time.time()
+		end = time.time()
 	elif metodo == 'Svc':
-  	start = time.time()
+		start = time.time()
 		clf = SVC(max_iter=10000)
 		clf.fit(X, y)
-  	end = time.time()
+		end = time.time()
 
 	if (gs):
 		# print clf.get_params().keys()
@@ -495,9 +495,9 @@ if __name__ == '__main__':
 				"min_samples_split": [1,3],
 				"criterion": ["gini", "entropy"]}
 		clf = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2)
-  	start = time.time()
+		start = time.time()
 		clf.fit(X, y)
-  	end = time.time()
+		end = time.time()
 		print clf.best_params_
 
 		metodo = "GS_" + metodo
@@ -507,7 +507,7 @@ if __name__ == '__main__':
 	f.write("<" + str(d.day) + "/" + str(d.month) + "/" + str(d.year) + " " + str(d.hour) + "hs>\n")
 	f.write("TRAIN " + metodo + " - " + base + "\n")
 	f.write("T: " + str(end - start) + "\n")
-  f.close()
+	f.close()
 	guardar_modelo(metodo, base)
 
 #http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
