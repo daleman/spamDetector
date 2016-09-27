@@ -8,12 +8,27 @@
 
 *Cargar datos:
 	python tp.py File
+
 *Reducir Dimensiones:
 	python tp.py Red dimension [n=10]
+	Ej:
+	python tp.py Red PCA 5
+
 *Entrenar un modelo:
-	python tp.py [Gsearch] metodo base [cv=10]
+	python tp.py [Gsearch] metodo [base=full]
+	Ej:
+	python tp.py Dtree
+	python tp.py Gsearch Dtree trainX_PCA5.npy
+
+*Cross Validation:
+	python tp.py CV metodo base [cv=10]
+	Ej:
+	python tp.py CV Dtree trainX_PCA5.npy 20
+
 *Predecir:
 	python tp.py Test metodo base
+	Ej:
+	python tp.py Test Dtree testX_PCA5.npy
 
 	metodos = Dtree, Rforest, Etree, Knn, Nbayes, Svc 
 	dimensiones = PCA, iPCA, ICA, RFE
@@ -324,10 +339,9 @@ def predecir(metodo, base):
 	f.write("F: %1.3f\n" % f1_score(testn, predn))
 	f.write("A: %1.3f\n" % accuracy_score(testn, predn))
 	f.write("R: %1.3f\n" % roc_auc_score(testn, predn))
+	f.close()
 
 if __name__ == '__main__':
-	cv = 10
-	gs = False
 	if len(sys.argv) > 1:
 		metodo = sys.argv[1]
 		n = 2
@@ -353,6 +367,37 @@ if __name__ == '__main__':
 				exit()				
 			red_dim(metodo, dims)
 			exit()
+		# CV
+		if metodo == 'CV':
+			cv = 10
+			base = "testX.npy"
+			if len(sys.argv) > n:
+				metodo = sys.argv[n]
+				n = n + 1
+			else:
+				print u'¿Qué método querés?'
+				exit()
+			if len(sys.argv) > n:
+				base = sys.argv[n]
+				n = n + 1
+			else:
+				print u'¿Qué base querés?'
+				exit()
+			if len(sys.argv) > n:
+				cv = int(sys.argv[n])
+				n = n + 1
+			clf = pickle.load(open(metodo + base + '.pickle'))
+			X = np.load(base)
+			y = np.load('trainy.npy')
+			res = cross_val_score(clf, X, y, cv=cv)
+			d = datetime.datetime.now()
+			f = open("data.txt",'a')
+			f.write("<" + str(d.day) + "/" + str(d.month) + "/" + str(d.year) + " " + str(d.hour) + "hs>\n")
+			f.write(metodo + " - " + base + "\n")
+			f.write("M:" + str(np.mean(res))+"\n")
+			f.write("S:" + str(np.std(res))+"\n")
+			f.close()
+			exit()
 		# TEST
 		if metodo == 'Test':
 			base = "testX.npy"
@@ -371,6 +416,7 @@ if __name__ == '__main__':
 			predecir(metodo, base)
 			exit()
 		# TRAIN
+		gs = False
 		if metodo == 'Gsearch':
 			if len(sys.argv) > n:
 				metodo = sys.argv[n]
@@ -388,12 +434,6 @@ if __name__ == '__main__':
 	base = "trainX.npy"
 	if len(sys.argv) > n:
 		base = sys.argv[n]
-		n = n + 1
-	else:
-		print u'¿Qué base querés?'
-		exit()
-	if len(sys.argv) > n:
-		cv = int(sys.argv[n])
 		n = n + 1
 
 	X = np.load(base)	
@@ -444,9 +484,6 @@ if __name__ == '__main__':
 		metodo = "GS_" + metodo
 
 	guardar_modelo(metodo, base)
-
-	res = cross_val_score(clf, X, y, cv=cv)
-	print np.mean(res), np.std(res)
 
 #http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
 #-criterion

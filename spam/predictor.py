@@ -238,7 +238,8 @@ if __name__ == '__main__':
 	metodo = "Dtree"
 	df = pd.DataFrame(test, columns=['text'])
 	df, dnames = cargando_atributos(df)
-	clf = pickle.load(open(metodo + '_entrenado.pickle'))
+	# Transformar si es necesario (PCA, ICA, etc.)
+	clf = pickle.load(open(metodo))
 	predy = list(clf.predict(df[dnames].values))
 	for p in predy:
 		print p
