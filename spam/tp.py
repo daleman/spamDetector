@@ -11,7 +11,7 @@
 *Reducir Dimensiones:
 	python tp.py Red dimension [n=10]
 *Entrenar un modelo:
-	python tp.py [Gsearch] metodo [cv=10]
+	python tp.py [Gsearch] metodo base [cv=10]
 *Predecir:
 	python tp.py Test metodo base
 
@@ -233,8 +233,8 @@ def cargar_mails():
 	df['class'] = ['ham' for _ in range(len(ham_txt))]+['spam' for _ in range(len(spam_txt))]
 	return df
 
-def guardar_modelo(metodo):
-	str_file = metodo + '_entrenado.pickle'	
+def guardar_modelo(metodo, base):
+	str_file = metodo + base + '.pickle'	
 	fout = open(str_file,'w')
 	pickle.dump(clf,fout)
 	fout.close()
@@ -255,14 +255,9 @@ def cargando_atributos(df):
 ,count_content,count_technologies,count_normal,count_prior,count_style,count_style2,count_none,count_quot,count_statements
 ,count_0500,count_bb,count_425,count_msg,count_w3c,count_SMTPSVC,count_3d,count_public,count_0cm,count_paliourg,count_bt,count_mp,count_ff,count_img,count_smtp,count_http3d,count_b0,count_table,count_recv,count_ms,count_Mail,count_solid2,count_cec,count_cecn,count_bl,count_Adobe,count_421,count_fs,count_2900,count_div,count_size2,count_Helvetica,count_software]
 
-	print len(dfuncs)
-
-	#start_time = time.time()
 	print "Cargando atributos"
 	for i in range(len(dnames)):
-	#	print str(i) + " " + dnames[i]
 		df[dnames[i]] = map(dfuncs[i], df.text)
-	#	print("--- %s seconds ---" % (time.time() - start_time))
 	X = df[dnames].values
 	y = df['class']
 	return X, y
@@ -300,12 +295,12 @@ def red_dim(metodo, n):
 		#rfe.fit(trainX)
 		#trainX = rfe.transform(trainX)
 		#testX = rfe.transform(testX)
-	np.save('trainXt', trainX)
-	np.save('testXt', testX)
+	np.save('trainX_' + metodo + str(n) , trainX)
+	np.save('testX_' + metodo + str(n), testX)
 
-def predecir(metodo):
-	testX = np.load('testXt.npy')
-	clf = pickle.load(open(metodo + '_entrenado.pickle'))
+def predecir(metodo, base):
+	testX = np.load(base)
+	clf = pickle.load(open(metodo + base + '.pickle'))
 	predy = list(clf.predict(testX))
 	testy = np.load('testy.npy')
 	testn = map(lambda x : ( 1 if x == 'ham' else 0 ), testy)
@@ -346,13 +341,20 @@ if __name__ == '__main__':
 			exit()
 		# TEST
 		if metodo == 'Test':
+			base = "testX.npy"
 			if len(sys.argv) > n:
 				metodo = sys.argv[n]
 				n = n + 1
 			else:
 				print u'¿Qué método querés?'
 				exit()
-			predecir(metodo)
+			if len(sys.argv) > n:
+				base = sys.argv[n]
+				n = n + 1
+			else:
+				print u'¿Qué base querés?'
+				exit()
+			predecir(metodo, base)
 			exit()
 		# TRAIN
 		if metodo == 'Gsearch':
@@ -368,6 +370,13 @@ if __name__ == '__main__':
 		exit()
 	if metodo != 'Dtree' and metodo != 'Rforest' and metodo != 'Knn' and metodo != 'Nbayes' and metodo != 'Svc':
 		print u'Método inválido'
+		exit()
+	base = "trainX.npy"
+	if len(sys.argv) > n:
+		base = sys.argv[n]
+		n = n + 1
+	else:
+		print u'¿Qué base querés?'
 		exit()
 	if len(sys.argv) > n:
 		cv = int(sys.argv[n])
@@ -415,14 +424,14 @@ if __name__ == '__main__':
 				"min_samples_split": [1,3],
 				"criterion": ["gini", "entropy"]}
 		clf = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2)
-		X = np.load('trainXt.npy')	
+		X = np.load(base)	
 		y = np.load('trainy.npy')
 		clf.fit(X, y)
 		print clf.best_params_
 		
 		metodo = "GS_" + metodo
 
-	guardar_modelo(metodo)
+	guardar_modelo(metodo, base)
 
 	res = cross_val_score(clf, X, y, cv=cv)
 	print np.mean(res), np.std(res)
