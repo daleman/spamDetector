@@ -466,12 +466,13 @@ if __name__ == '__main__':
 				"min_samples_split": [3],
 				"criterion": ["gini", "entropy"]}
 		elif metodo == 'Rforest':
-			# max_depth: 10, n_estimators: 10, min_smaples_split: 5, criterion: entropy, max_features: 105
-			param_grid = {"max_depth": [None],
-				"max_features": [95,100,105],
-				"min_samples_split": [4,5],
-				"criterion": ["entropy"],
-				"n_estimators": [13,15,17,20]}
+			# max_depth: None, min_smaples_split: 4,5, criterion: entropy, max_features: 95
+			# , n_estimators: 80 (y si le sigo aumentado sigue agarrando el maximo)
+			param_grid = {"max_depth": [14,16,None],
+				"max_features": [90,95,100,105,None],
+				"min_samples_split": [3,4,5],
+				"criterion": ["gini","entropy"],
+				"n_estimators": [20,30,40,80]}
 		elif metodo == 'Knn':
 			# n_neighbors: 4, weights: distance
 			param_grid = {"n_neighbors": [3,4,5],
