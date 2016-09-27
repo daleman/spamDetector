@@ -30,7 +30,7 @@
 	Ej:
 	python tp.py Test Dtree testX_PCA5.npy
 
-	metodos = Dtree, Rforest, Etree, Knn, Nbayes, Svc 
+	metodos = Dtree, Rforest, Etree, Knn, Nbayes, Svc
 	dimensiones = PCA, iPCA, ICA, RFE
 """
 
@@ -249,7 +249,7 @@ def cargar_mails():
 	return df
 
 def guardar_modelo(metodo, base):
-	str_file = metodo + base + '.pickle'	
+	str_file = metodo + base + '.pickle'
 	fout = open(str_file,'w')
 	pickle.dump(clf,fout)
 	fout.close()
@@ -364,7 +364,7 @@ if __name__ == '__main__':
 					n = n + 1
 			else:
 				print u'¿Qué dimension querés?'
-				exit()				
+				exit()
 			red_dim(metodo, dims)
 			exit()
 		# CV
@@ -436,7 +436,7 @@ if __name__ == '__main__':
 		base = sys.argv[n]
 		n = n + 1
 
-	X = np.load(base)	
+	X = np.load(base)
 	y = np.load('trainy.npy')
 
 	if metodo == 'Dtree':
@@ -454,24 +454,28 @@ if __name__ == '__main__':
 	elif metodo == 'Svc':
 		clf = SVC(max_iter=10000)
 		clf.fit(X, y)
-	
+
 	if (gs):
+		# print clf.get_params().keys()
+		# exit()
 		param_grid = {}
 		if metodo == 'Dtree':
-			param_grid = {"max_depth": [5,7,10,15,None],
-				"max_features": [10,15,30,50],
-				"min_samples_split": [1,3],
+			# max_depth: 14 16 o None, min_samples_split: 3, criterion: entropy
+			param_grid = {"max_depth": [14,15,16,None],
+				"max_features": [164,166,168,170,None],
+				"min_samples_split": [3],
 				"criterion": ["gini", "entropy"]}
 		elif metodo == 'Rforest':
-			param_grid = {"max_depth": [1,2],
-				"max_features": [10,15],
-				"min_samples_split": [1,3],
-				"criterion": ["gini", "entropy"]}
+			# max_depth: 10, n_estimators: 10, min_smaples_split: 5, criterion: entropy, max_features: 105
+			param_grid = {"max_depth": [None],
+				"max_features": [95,100,105],
+				"min_samples_split": [4,5],
+				"criterion": ["entropy"],
+				"n_estimators": [13,15,17,20]}
 		elif metodo == 'Knn':
-			param_grid = {"max_depth": [1,2],
-				"max_features": [10,15],
-				"min_samples_split": [1,3],
-				"criterion": ["gini", "entropy"]}
+			# n_neighbors: 4, weights: distance
+			param_grid = {"n_neighbors": [3,4,5],
+				"weights": ["uniform", "distance"]}
 		elif metodo == 'Nbayes':
 			param_grid = {"max_depth": [1,2],
 				"max_features": [10,15],
@@ -480,7 +484,7 @@ if __name__ == '__main__':
 		clf = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2)
 		clf.fit(X, y)
 		print clf.best_params_
-		
+
 		metodo = "GS_" + metodo
 
 	guardar_modelo(metodo, base)
@@ -534,7 +538,7 @@ if __name__ == '__main__':
 #-cache_size
 #-class_weight
 #-max_iter
-#-decision_function_shape 
+#-decision_function_shape
 #-random_state
 
 
