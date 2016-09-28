@@ -45,6 +45,7 @@ En principio usamos como atributos la cantidad de apariciones de estas palabras 
 \item Cantidad de letras maxima por palabra. 
 \end{itemize}
 
+Se pudo observar que a médida que ibamos agregando atributos, el modelo predictivo obtenía un valor más alto de accuracy y rápidamente se pudo llegar al \%97 de accuracy.
 
 \section{Modelos}
 %Listar los algoritmos de aprendizaje elegidos para experimentar. Describir cualquier decisión que hayan tomado (p.ej., elección de hiperparámetros).
@@ -58,24 +59,28 @@ Utilizamos los siguientes algoritmos de aprendizaje:
 \item Support Vector Machines (SVM)
 \end{itemize}
 
+
 \section{Reducción de dimensionalidad} 
 Sobre técnicas de reducción de dimensionalidad usamos:
 
 \begin{description}
-\item PCA []
-\item ICA
-\item iPCA
-\item REFCV[ Con esta ténica vimos los atributos que ofrecen mayor poder predictivo]
+\item [PCA] 
+\item [ICA]
+\item [iPCA]
+\item [REFCV] Con esta ténica vimos los atributos que ofrecen mayor poder predictivo
 \end{description}
 
 % Describir brevemente las técnicas empleadas.
 \section{Resultados}
  %Describir los resultados conseguidos por los distintos modelos y conjuntos de atributos considerados. Preferentemente, resumir los resultados en tablas/figuras. Mencionar los tiempos de ejecución aproximados de cada técnica.
 
+Vimos como varía la médida de F1 a médida que incrementamos la cantidad de componentes.
 \includegraphics[width=\textwidth]{../imgs/F1ICA.png}
 \includegraphics[width=\textwidth]{../imgs/F1PCA.png}
+Comparamos los modelos según varias médidas de performance sobre los datos de test separados previamente (teniendo al mismo set de datos de test siempre para realizar las mediciones de forma adecuada):
 \includegraphics[width=\textwidth]{../imgs/metodos1.png}
 \includegraphics[width=\textwidth]{../imgs/metodos2.png}
+A continuación mostramos un gráfico que muestra la médida de F1 en función de la cantidad de iteraciones del modelo de Support Vector Machine:
 \includegraphics[width=\textwidth]{../imgs/SVCFULL.png}
 \includegraphics[width=\textwidth]{../imgs/SVCSTART.png}
 
@@ -84,8 +89,44 @@ Sobre técnicas de reducción de dimensionalidad usamos:
 \section{Discusión}
  %Analizar los resultados, buscando responder cuestiones como, por ejemplo: ¿cuáles son los atributos encontrados con mayor poder predictivo?, ¿cuán sensibles fueron los algoritmos a las técnicas de reducción de dimensionalidad consideradas?, ¿resultó clara la elección del algoritmo para la competencia, o hubo que poner en la balanza distintos factores?
  
-% A continuación podemos ver los atributos con mayor poder predictivo seleccionados con el metodo de RFCV
+ A continuación podemos ver los atributos con mayor poder predictivo seleccionados con el metodo de RFCV haciendo cross validation con k = 5 y step = 1. RFECV lo que hace es ir reduciendo la cantidad de atributos teniendo en cuenta un peso asociado que se obtiene a partir del estimador usado:
+
+\begin{description}
+\item [count_ESMTP]
+\item [count_upper]
+\item [count_guionba]
+\item [count_dol
+\item [count_arr]
+\item [count_and]
+\item [count_equal]
+\item [count_dotc]
+\item [count_com]
+\item [count_menor]
+\item [count_menos]
+\item [count_html]
+\item [count_0600]
+\item [count_2002]
+\item [count_your]
+\item [count_0800]
+\item [count_align]
+\item [count_0500]
+\item [count_smtp]
+\item [count_cec]
+\end{description}
+
+
+En el siguiente gráfico mostramos que con 20 atributos se puede llegar al score optimo de cross validation.
+\includegraphics[width=\textwidth]{../imgs/atr.png}
+
 
 % Podemos ver un græfico con medidas de cuan bueno es un modelo con pocas componentes y como mejora a lo largo del incremento de componentes
 
+Notamos en el gráfico que comapara F1 en función de la cantidad de componentes que con pocas componentes (5 o 6) ya se puede obtener un calor igual 0,90 y después las demás componentes (de la nueva base transformada) no mejoran demasiado la médida de performance en cuestión.
+
+Se puede observar que el mejor modelo es el de Random Forest, teniendo todas las médidas de performance en \%99. Igualmente el modelo basado en arboles de decisión es muy cercano en cuanto a performance, no así los modelos implementados de Naive Bayes y de Support Vector Machines. Por último el modelo de Vecinos más cercanos tiene un \%94 de accuracy. Dado que sabemos que Random Forest tuvo mejores médidas (incluso teniendo en cuenta el desvío estandard) lo elegimos como el modelos para ser usado en la competencia.
+
+Por ultimo es importante destacar que el modelo SVM mejora hasta una cierta cantidad de iteraciones(aproximadamente 10000) y luego la performance empieza a disminuir. 
+
 \end{document}
+
+
