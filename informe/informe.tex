@@ -3,6 +3,7 @@
 \usepackage{graphicx}                   % Gráficos
 \usepackage[spanish]{babel}             % Macros en español
 \usepackage{caratula}                   % Carátula
+\usepackage{float}
 \begin{document}
 
 %Caratula
@@ -75,14 +76,48 @@ Sobre técnicas de reducción de dimensionalidad usamos:
  %Describir los resultados conseguidos por los distintos modelos y conjuntos de atributos considerados. Preferentemente, resumir los resultados en tablas/figuras. Mencionar los tiempos de ejecución aproximados de cada técnica.
 
 Vimos como varía la médida de F1 a médida que incrementamos la cantidad de componentes.
+\begin{figure}[H]
+\centering
 \includegraphics[width=\textwidth]{../imgs/F1ICA.png}
+% \caption{}
+% \label{fig:ej1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
 \includegraphics[width=\textwidth]{../imgs/F1PCA.png}
+% \caption{}
+% \label{fig:ej1}
+\end{figure}
+
 Comparamos los modelos según varias médidas de performance sobre los datos de test separados previamente (teniendo al mismo set de datos de test siempre para realizar las mediciones de forma adecuada):
+\begin{figure}[H]
+\centering
 \includegraphics[width=\textwidth]{../imgs/metodos1.png}
+% \caption{}
+% \label{fig:ej1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
 \includegraphics[width=\textwidth]{../imgs/metodos2.png}
+% \caption{}
+% \label{fig:ej1}
+\end{figure}
 A continuación mostramos un gráfico que muestra la médida de F1 en función de la cantidad de iteraciones del modelo de Support Vector Machine:
+\begin{figure}[H]
+\centering
 \includegraphics[width=\textwidth]{../imgs/SVCFULL.png}
+% \caption{}
+% \label{fig:ej1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
 \includegraphics[width=\textwidth]{../imgs/SVCSTART.png}
+% \caption{}
+% \label{fig:ej1}
+\end{figure}
 
 %
 
@@ -116,12 +151,18 @@ A continuación mostramos un gráfico que muestra la médida de F1 en función d
 
 
 En el siguiente gráfico mostramos que con 20 atributos se puede llegar al score optimo de cross validation.
+\begin{figure}[H]
+\centering
+% \includegraphics[width=145mm]{imgs/e3.jpg}
 \includegraphics[width=\textwidth]{../imgs/atr.png}
+% \caption{}
+% \label{fig:ej1}
+\end{figure}
 
 
 % Podemos ver un græfico con medidas de cuan bueno es un modelo con pocas componentes y como mejora a lo largo del incremento de componentes
 
-Notamos en el gráfico que comapara F1 en función de la cantidad de componentes que con pocas componentes (5 o 6) ya se puede obtener un calor igual 0,90 y después las demás componentes (de la nueva base transformada) no mejoran demasiado la médida de performance en cuestión.
+Notamos en el gráfico que compara F1 en función de la cantidad de componentes que con pocas componentes (5 o 6) ya se puede obtener un calor igual 0,90 y después las demás componentes (de la nueva base transformada) no mejoran demasiado la médida de performance en cuestión.
 
 Se puede observar que el mejor modelo es el de Random Forest, teniendo todas las médidas de performance en \%99. Igualmente el modelo basado en arboles de decisión es muy cercano en cuanto a performance, no así los modelos implementados de Naive Bayes y de Support Vector Machines. Por último el modelo de Vecinos más cercanos tiene un \%94 de accuracy. Dado que sabemos que Random Forest tuvo mejores médidas (incluso teniendo en cuenta el desvío estandard) lo elegimos como el modelos para ser usado en la competencia.
 
