@@ -50,15 +50,15 @@ Se pudo observar que a médida que ibamos agregando atributos, el modelo predict
 
 \section{Modelos}
 %Listar los algoritmos de aprendizaje elegidos para experimentar. Describir cualquier decisión que hayan tomado (p.ej., elección de hiperparámetros).
-Utilizamos los siguientes algoritmos de aprendizaje:
+Utilizamos los siguientes algoritmos de aprendizaje y seteamos los hiperparámetros a partir de un \texttt{gridSearch}:
 
-\begin{itemize}
-\item Decision Tree
-\item Random Forest
-\item Naive Bayes
-\item Vecinos Más Cercanos(KNN)
-\item Support Vector Machines (SVM)
-\end{itemize}
+\begin{description}
+\item [Decision Tree] max\_depth: 14 16 o None, min\_samples_split: 3, criterion: entropy
+\item [Random Forest] max_depth: None, min\_smaples\_split: 4,5, criterion: entropy, max\_features: 95 , n_estimators: 80 
+\item [Naive Bayes]
+\item [Vecinos Más Cercanos(KNN)]  n_neighbors: 4, weights: distance
+\item [Support Vector Machines (SVM)]
+\end{description}
 
 
 \section{Reducción de dimensionalidad}
