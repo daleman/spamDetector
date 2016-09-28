@@ -27,7 +27,7 @@
 \section{Metodología}
 Cargamos los mails de los archivos json
 Extrajimos los atributos de la base de mails y los guardamos como matrices
-Separamos los datos de entrenamiento de los de test utilizando la funciøn train\\_test\\_split y almacenamos cada conjunto en archivos npy.
+Separamos los datos de entrenamiento de los de test utilizando la funciøn train\_test\_split y almacenamos cada conjunto en archivos npy.
 
 \section{Extracción de atributos}
 %Describir en castellano los atributos extraidos de los mails, en forma concisa.
@@ -41,8 +41,8 @@ En principio usamos como atributos la cantidad de apariciones de estas palabras 
 \item Cantidad de palabras en mayusculas.
 \item Cantidad de palabras compuestas por numeros.
 \item Cantidad de palabras escritas con la primera letra en mayuscula.
-\item Cantidad de letras promedio por palabra. 
-\item Cantidad de letras maxima por palabra. 
+\item Cantidad de letras promedio por palabra.
+\item Cantidad de letras maxima por palabra.
 \end{itemize}
 
 Se pudo observar que a médida que ibamos agregando atributos, el modelo predictivo obtenía un valor más alto de accuracy y rápidamente se pudo llegar al \%97 de accuracy.
@@ -60,11 +60,11 @@ Utilizamos los siguientes algoritmos de aprendizaje:
 \end{itemize}
 
 
-\section{Reducción de dimensionalidad} 
+\section{Reducción de dimensionalidad}
 Sobre técnicas de reducción de dimensionalidad usamos:
 
 \begin{description}
-\item [PCA] 
+\item [PCA]
 \item [ICA]
 \item [iPCA]
 \item [REFCV] Con esta ténica vimos los atributos que ofrecen mayor poder predictivo
@@ -84,34 +84,34 @@ A continuación mostramos un gráfico que muestra la médida de F1 en función d
 \includegraphics[width=\textwidth]{../imgs/SVCFULL.png}
 \includegraphics[width=\textwidth]{../imgs/SVCSTART.png}
 
-% 
- 
+%
+
 \section{Discusión}
  %Analizar los resultados, buscando responder cuestiones como, por ejemplo: ¿cuáles son los atributos encontrados con mayor poder predictivo?, ¿cuán sensibles fueron los algoritmos a las técnicas de reducción de dimensionalidad consideradas?, ¿resultó clara la elección del algoritmo para la competencia, o hubo que poner en la balanza distintos factores?
- 
+
  A continuación podemos ver los atributos con mayor poder predictivo seleccionados con el metodo de RFCV haciendo cross validation con k = 5 y step = 1. RFECV lo que hace es ir reduciendo la cantidad de atributos teniendo en cuenta un peso asociado que se obtiene a partir del estimador usado:
 
 \begin{description}
-\item [count\_ESMTP]
-\item [count\_upper]
-\item [count\_guionba]
-\item [count\_dol
-\item [count\_arr]
-\item [count\_and]
-\item [count\_equal]
-\item [count\_dotc]
-\item [count\_com]
-\item [count\_menor]
-\item [count\_menos]
-\item [count\_html]
-\item [count\_0600]
-\item [count\_2002]
-\item [count\_your]
-\item [count\_0800]
-\item [count\_align]
-\item [count\_0500]
-\item [count\_smtp]
-\item [count\_cec]
+\item [\texttt{count\_ESMTP}]
+\item [\texttt{count\_upper}]
+\item [\texttt{count\_guionba}]
+\item [\texttt{count\_dol}]
+\item [\texttt{count\_arr}]
+\item [\texttt{count\_and}]
+\item [\texttt{count\_equal}]
+\item [\texttt{count\_dotc}]
+\item [\texttt{count\_com}]
+\item [\texttt{count\_menor}]
+\item [\texttt{count\_menos}]
+\item [\texttt{count\_html}]
+\item [\texttt{count\_0600}]
+\item [\texttt{count\_2002}]
+\item [\texttt{count\_your}]
+\item [\texttt{count\_0800}]
+\item [\texttt{count\_align}]
+\item [\texttt{count\_0500}]
+\item [\texttt{count\_smtp}]
+\item [\texttt{count\_cec}]
 \end{description}
 
 
@@ -125,8 +125,6 @@ Notamos en el gráfico que comapara F1 en función de la cantidad de componentes
 
 Se puede observar que el mejor modelo es el de Random Forest, teniendo todas las médidas de performance en \%99. Igualmente el modelo basado en arboles de decisión es muy cercano en cuanto a performance, no así los modelos implementados de Naive Bayes y de Support Vector Machines. Por último el modelo de Vecinos más cercanos tiene un \%94 de accuracy. Dado que sabemos que Random Forest tuvo mejores médidas (incluso teniendo en cuenta el desvío estandard) lo elegimos como el modelos para ser usado en la competencia.
 
-Por ultimo es importante destacar que el modelo SVM mejora hasta una cierta cantidad de iteraciones(aproximadamente 10000) y luego la performance empieza a disminuir. 
+Por ultimo es importante destacar que el modelo SVM mejora hasta una cierta cantidad de iteraciones(aproximadamente 10000) y luego la performance empieza a disminuir.
 
 \end{document}
-
-
