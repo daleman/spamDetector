@@ -32,7 +32,7 @@ Separamos los datos de entrenamiento de los de test utilizando la función train
 
 \section{Extracción de atributos}
 %Describir en castellano los atributos extraidos de los mails, en forma concisa.
-Para saber que palabras identifican mejor a los mails de spam, implementamos un script que cuenta la cantidad de ocurrencias por palabra, relativa entre los mails de spam contra los de ham.
+Para saber qué palabras identifican mejor a los mails de spam, implementamos un script que cuenta la cantidad de ocurrencias por palabra, relativa entre los mails de spam contra los de ham.
 Es decir, para cada palabra en los archivos json este script devuelve la cantidad de apariciones de dicha palabra en el archivo de spam menos la cantidad de apariciones de la misma palabra en el archivo ham.
 Este script está implementado en el archivo \texttt{wordCounter.py}. En el archivo \texttt{words-100.txt} se pueden ver las 100 palabras con mayor cantidad de ocurrencias relativa.
 
