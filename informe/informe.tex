@@ -26,8 +26,8 @@
 
 %\includegraphics{algo.png}
 \section{Metodología}
-Cargamos los mails de los archivos json
-Extrajimos los atributos de la base de mails y los guardamos como matrices
+Cargamos los mails de los archivos json.
+Extrajimos los atributos de la base de mails y los guardamos como matrices.
 Separamos los datos de entrenamiento de los de test utilizando la función train\_test\_split y almacenamos cada conjunto en archivos npy.
 
 \section{Extracción de atributos}
@@ -36,17 +36,17 @@ Para saber que palabras identifican mejor a los mails de spam, implementamos un 
 Es decir, para cada palabra en los archivos json este script devuelve la cantidad de apariciones de dicha palabra en el archivo de spam menos la cantidad de apariciones de la misma palabra en el archivo ham.
 Este script está implementado en el archivo \texttt{wordCounter.py}. En el archivo \texttt{words-100.txt} se pueden ver las 100 palabras con mayor cantidad de ocurrencias relativa.
 
-En principio usamos como atributos la cantidad de apariciones de estas palabras en cada mail. Por otro lado agregamos los atributos
+En principio usamos como atributos la cantidad de apariciones de estas palabras en cada mail. Por otro lado agregamos los atributos:
 
 \begin{itemize}
-\item Cantidad de palabras en mayusculas.
-\item Cantidad de palabras compuestas por numeros.
-\item Cantidad de palabras escritas con la primera letra en mayuscula.
+\item Cantidad de palabras en mayúsculas.
+\item Cantidad de palabras compuestas por números.
+\item Cantidad de palabras escritas con la primera letra en mayúscula.
 \item Cantidad de letras promedio por palabra.
-\item Cantidad de letras maxima por palabra.
+\item Cantidad de letras máxima por palabra.
 \end{itemize}
 
-Se pudo observar que a médida que ibamos agregando atributos, el modelo predictivo obtenía un valor más alto de accuracy y rápidamente se pudo llegar al \%97 de accuracy.
+Se pudo observar que a médida que ibamos agregando atributos, el modelo predictivo obtenía un valor más alto de accuracy y rápidamente se pudo llegar al 97\% de accuracy.
 
 \section{Modelos}
 %Listar los algoritmos de aprendizaje elegidos para experimentar. Describir cualquier decisión que hayan tomado (p.ej., elección de hiperparámetros).
@@ -100,7 +100,7 @@ Comparamos los modelos según varias médidas de performance sobre los datos de 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{../imgs/metodos2.png}
+\includegraphics[width=\textwidth]{../imgs/metodos3.png}
 % \caption{}
 % \label{fig:ej1}
 \end{figure}
@@ -124,7 +124,7 @@ A continuación mostramos un gráfico que muestra la médida de F1 en función d
 \section{Discusión}
  %Analizar los resultados, buscando responder cuestiones como, por ejemplo: ¿cuáles son los atributos encontrados con mayor poder predictivo?, ¿cuán sensibles fueron los algoritmos a las técnicas de reducción de dimensionalidad consideradas?, ¿resultó clara la elección del algoritmo para la competencia, o hubo que poner en la balanza distintos factores?
 
- A continuación podemos ver los atributos con mayor poder predictivo seleccionados con el metodo de RFCV haciendo cross validation con k = 5 y step = 1. RFECV lo que hace es ir reduciendo la cantidad de atributos teniendo en cuenta un peso asociado que se obtiene a partir del estimador usado:
+ A continuación podemos ver los atributos con mayor poder predictivo seleccionados con el metodo de RFCV haciendo cross validation con k = 5 y step = 1 usando como método un árbol de decisión. RFECV lo que hace es ir reduciendo la cantidad de atributos teniendo en cuenta un peso asociado que se obtiene a partir del estimador usado:
 
 \begin{description}
 \item [\texttt{count\_ESMTP}]
@@ -150,7 +150,7 @@ A continuación mostramos un gráfico que muestra la médida de F1 en función d
 \end{description}
 
 
-En el siguiente gráfico mostramos que con 20 atributos se puede llegar al score optimo de cross validation.
+En el siguiente gráfico mostramos que con 20 atributos se puede llegar al score óptimo de cross validation.
 \begin{figure}[H]
 \centering
 % \includegraphics[width=145mm]{imgs/e3.jpg}
@@ -164,8 +164,8 @@ En el siguiente gráfico mostramos que con 20 atributos se puede llegar al score
 
 Notamos en el gráfico que compara F1 en función de la cantidad de componentes que con pocas componentes (5 o 6) ya se puede obtener un valor igual a 0,90 y después las demás componentes (de la nueva base transformada) no mejoran demasiado la médida de performance en cuestión.
 
-Se puede observar que el mejor modelo es el de Random Forest, teniendo todas las médidas de performance en \%99. Igualmente el modelo basado en arboles de decisión es muy cercano en cuanto a performance, no así los modelos implementados de Naive Bayes y de Support Vector Machines. Por último el modelo de Vecinos más cercanos tiene un \%94 de accuracy. Dado que sabemos que Random Forest tuvo mejores médidas (incluso teniendo en cuenta el desvío estandard) lo elegimos como el modelo para ser usado en la competencia.
+Se puede observar que el mejor modelo es el de Random Forest, teniendo todas las médidas de performance en 99\%. Igualmente el modelo basado en arboles de decisión es muy cercano en cuanto a performance, no así los modelos implementados de Naive Bayes y de Support Vector Machines. Por último el modelo de Vecinos más cercanos tiene un 94\% de accuracy. Dado que sabemos que Random Forest tuvo mejores médidas (incluso teniendo en cuenta el desvío estandard) lo elegimos como el modelo para ser usado en la competencia.
 
-Por ultimo es importante destacar que el modelo SVM mejora hasta una cierta cantidad de iteraciones (aproximadamente 10000) y luego la performance empieza a disminuir.
+Finalmente es importante destacar que el modelo SVM mejora hasta una cierta cantidad de iteraciones (aproximadamente 10000) y luego la performance empieza a disminuir.
 
 \end{document}
