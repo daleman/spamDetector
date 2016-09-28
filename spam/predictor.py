@@ -235,7 +235,7 @@ if __name__ == '__main__':
 	else:
 		print u'Faltan parámetros!'
 		exit()
-	metodo = "Dtree"
+	metodo = "GS_RforesttrainX.npy.pickle"
 	df = pd.DataFrame(test, columns=['text'])
 	df, dnames = cargando_atributos(df)
 	# Transformar si es necesario (PCA, ICA, etc.)
